@@ -546,6 +546,22 @@
     white-space: nowrap;
   }
 
+  &__placeholder {
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    width: 56px;
+    height: 56px;
+    color: var(--va-ink-3);
+    background: var(--va-surface-2);
+    border-radius: var(--va-radius-xs);
+
+    .va_icon {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
   &__foot {
     display: flex;
     flex-wrap: wrap;
@@ -584,6 +600,11 @@
   &--done {
     color: var(--va-mint);
     background: var(--va-mint-soft);
+  }
+
+  &--cancel {
+    color: var(--va-sale);
+    background: var(--va-sale-soft);
   }
 }
 

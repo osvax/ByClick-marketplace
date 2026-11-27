@@ -67,6 +67,12 @@
       border-color: currentColor;
     }
   }
+
+  &__email {
+    font-size: 12.5px;
+    color: var(--va-ink-3);
+    word-break: break-all;
+  }
 }
 
 .va_profile-menu {
@@ -286,6 +292,39 @@
 }
 
 // --- Финансы ---
+.va_profile-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 20px;
+
+  @include media-up(720px) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.va_profile-stat {
+  padding: 14px 16px;
+  background: var(--va-surface);
+  border: 1px solid var(--va-line);
+  border-radius: var(--va-radius-md);
+
+  &__label {
+    display: block;
+    font-size: 11.5px;
+    color: var(--va-ink-3);
+  }
+
+  &__value {
+    display: block;
+    margin-top: 4px;
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    line-height: 1.25;
+  }
+}
+
 .va_profile-section {
   margin-top: clamp(26px, 3.6vw, 38px);
   scroll-margin-top: 120px;

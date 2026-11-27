@@ -22,4 +22,16 @@ enum OrderStatus: string
             self::Cancelled => 'Отменён',
         };
     }
+
+    /**
+     * CSS modifier for the status badge in order lists.
+     */
+    public function badgeClass(): string
+    {
+        return match ($this) {
+            self::Delivered => 'va_status--done',
+            self::Cancelled => 'va_status--cancel',
+            default => 'va_status--way',
+        };
+    }
 }

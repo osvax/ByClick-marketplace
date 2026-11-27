@@ -23,3 +23,9 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::post('/logout', LogoutController::class)->middleware('auth')->name('logout');
+
+// Authenticated customer area.
+Route::middleware('auth')->group(function () {
+    Route::view('/profile', 'profile')->name('profile');
+    Route::view('/orders', 'orders')->name('orders');
+});
