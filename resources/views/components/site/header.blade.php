@@ -122,6 +122,12 @@
                             <p class="va_account__email">{{ auth()->user()->email }}</p>
                             <a class="va_account__link" href="{{ url('/profile') }}">Профиль</a>
                             <a class="va_account__link" href="{{ url('/orders') }}">Мои заказы</a>
+                            @if (auth()->user()->isSeller() || auth()->user()->isAdmin())
+                                <a class="va_account__link" href="{{ route('seller.dashboard') }}">Кабинет продавца</a>
+                            @endif
+                            @if (auth()->user()->isAdmin())
+                                <a class="va_account__link" href="{{ route('admin.dashboard') }}">Админка</a>
+                            @endif
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
                                 <button class="va_account__logout" type="submit">Выйти</button>

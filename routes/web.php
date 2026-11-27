@@ -36,3 +36,28 @@ Route::middleware('auth')->group(function () {
     Route::view('/profile', 'profile')->name('profile');
     Route::view('/orders', 'orders')->name('orders');
 });
+
+// Seller cabinet.
+Route::middleware(['auth', 'role:seller,admin'])
+    ->prefix('seller')
+    ->name('seller.')
+    ->group(function () {
+        Route::view('/dashboard', 'seller.dashboard')->name('dashboard');
+        Route::view('/products', 'seller.products')->name('products');
+        Route::view('/orders', 'seller.orders')->name('orders');
+    });
+
+// Administrator panel.
+Route::middleware(['auth', 'role:admin'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+        Route::view('/', 'admin.dashboard')->name('dashboard');
+        Route::view('/requests', 'admin.requests')->name('requests');
+        Route::view('/shops', 'admin.shops')->name('shops');
+        Route::view('/orders', 'admin.orders')->name('orders');
+        Route::view('/products', 'admin.products')->name('products');
+        Route::view('/categories', 'admin.categories')->name('categories');
+        Route::view('/users', 'admin.users')->name('users');
+        Route::view('/promocodes', 'admin.promocodes')->name('promocodes');
+    });

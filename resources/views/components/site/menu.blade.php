@@ -30,6 +30,14 @@
                 <li><a href="{{ url('/help') }}">Помощь</a></li>
                 <li><a href="{{ url('/delivery') }}">Пункты выдачи</a></li>
                 <li><a href="{{ url('/seller') }}">Стать продавцом</a></li>
+                @auth
+                    @if (auth()->user()->isSeller() || auth()->user()->isAdmin())
+                        <li><a href="{{ route('seller.dashboard') }}">Кабинет продавца</a></li>
+                    @endif
+                    @if (auth()->user()->isAdmin())
+                        <li><a href="{{ route('admin.dashboard') }}">Админка</a></li>
+                    @endif
+                @endauth
             </ul>
         </nav>
 

@@ -39,6 +39,14 @@
             </label>
 
             <label class="va_field">
+                Название магазина
+                <input class="va_input" type="text" wire:model="shopName" placeholder="Например, ТехноДом" />
+                @error('shopName')
+                    <span class="va_field__error">{{ $message }}</span>
+                @enderror
+            </label>
+
+            <label class="va_field">
                 Категория
                 <select class="va_input" wire:model="categoryId">
                     <option value="">Выберите категорию</option>

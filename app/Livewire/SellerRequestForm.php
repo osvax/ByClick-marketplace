@@ -17,6 +17,8 @@ class SellerRequestForm extends Component
 
     public string $email = '';
 
+    public string $shopName = '';
+
     public string $categoryId = '';
 
     public string $comment = '';
@@ -40,6 +42,7 @@ class SellerRequestForm extends Component
         $this->name = $user->name;
         $this->email = $user->email;
         $this->phone = $user->phone ?? '';
+        $this->shopName = (string) $user->shop()->value('name');
     }
 
     /**
@@ -50,6 +53,7 @@ class SellerRequestForm extends Component
         $this->name = trim($this->name);
         $this->phone = trim($this->phone);
         $this->email = trim($this->email);
+        $this->shopName = trim($this->shopName);
         $this->categoryId = trim($this->categoryId);
         $this->comment = trim($this->comment);
 
@@ -57,6 +61,7 @@ class SellerRequestForm extends Component
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['required', 'string', 'max:32'],
             'email' => ['required', 'string', 'email', 'max:255'],
+            'shopName' => ['required', 'string', 'max:255'],
             'categoryId' => [
                 'required',
                 'integer',
@@ -70,6 +75,7 @@ class SellerRequestForm extends Component
             'name' => 'имя',
             'phone' => 'телефон',
             'email' => 'e-mail',
+            'shopName' => 'название магазина',
             'categoryId' => 'категория',
             'comment' => 'комментарий',
             'agree' => 'согласие на обработку данных',
@@ -80,6 +86,7 @@ class SellerRequestForm extends Component
             'name' => $this->name,
             'phone' => $this->phone,
             'email' => $this->email,
+            'shop_name' => $this->shopName,
             'category_id' => (int) $this->categoryId,
             'comment' => $this->comment !== '' ? $this->comment : null,
             'status' => SellerRequestStatus::New,

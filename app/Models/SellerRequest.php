@@ -18,13 +18,14 @@ use Illuminate\Support\Carbon;
  * @property string $name
  * @property string $phone
  * @property string $email
+ * @property string|null $shop_name
  * @property int|null $category_id
  * @property string|null $comment
  * @property SellerRequestStatus $status
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-#[Fillable(['user_id', 'name', 'phone', 'email', 'category_id', 'comment', 'status'])]
+#[Fillable(['user_id', 'name', 'phone', 'email', 'shop_name', 'category_id', 'comment', 'status'])]
 class SellerRequest extends Model
 {
     /** @use HasFactory<SellerRequestFactory> */

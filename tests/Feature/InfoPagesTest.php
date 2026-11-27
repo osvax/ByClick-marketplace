@@ -54,6 +54,7 @@ it('stores a seller request from a guest', function () {
         ->set('name', 'Иван Петров')
         ->set('phone', '+375 29 123-45-67')
         ->set('email', 'seller-request@example.com')
+        ->set('shopName', 'ТехноДом')
         ->set('categoryId', (string) $category->id)
         ->set('comment', 'Магазин электроники')
         ->set('agree', true)
@@ -64,6 +65,7 @@ it('stores a seller request from a guest', function () {
 
     $this->assertDatabaseHas('seller_requests', [
         'name' => 'Иван Петров',
+        'shop_name' => 'ТехноДом',
         'email' => 'seller-request@example.com',
         'category_id' => $category->id,
         'user_id' => null,
@@ -87,7 +89,7 @@ it('prefills the seller request for an authenticated user', function () {
 it('validates the seller request form', function () {
     Livewire::test(SellerRequestForm::class)
         ->call('submit')
-        ->assertHasErrors(['name', 'phone', 'email', 'categoryId', 'agree']);
+        ->assertHasErrors(['name', 'phone', 'email', 'shopName', 'categoryId', 'agree']);
 
     expect(SellerRequest::query()->count())->toBe(0);
 });
