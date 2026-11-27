@@ -153,12 +153,11 @@
                     @endif
                 @endif
 
-                <button
+                <a
                     class="va_btn va_btn--primary va_btn--block"
-                    type="button"
-                    data-va-demo-toast="Демо-режим: оформление заказа появится на следующем шаге"
-                >Оформить заказ</button>
-                <p class="va_summary__hint">Демо-режим: оплата и доставка не подключены.</p>
+                    href="{{ route('checkout') }}"
+                >Оформить заказ</a>
+                <p class="va_summary__hint">Демо-режим: оплата не подключена.</p>
 
                 <div class="va_summary__links">
                     <a href="{{ route('catalog') }}">Продолжить покупки</a>

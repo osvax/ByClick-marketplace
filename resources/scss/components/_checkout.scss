@@ -1,0 +1,22 @@
+// ============================================================
+//  Оформление заказа: небольшие дополнения к шаблону
+// ============================================================
+
+.va_checkout-list {
+  margin: 0 0 14px;
+  padding: 0;
+  list-style: none;
+}
+
+.va_summary__count {
+  font-weight: 600;
+  color: var(--va-ink-3);
+}
+
+.va_checkout-success-details {
+  margin-top: 24px;
+}
+
+.va_checkout-item--no-img {
+  grid-template-columns: minmax(0, 1fr) auto;
+}

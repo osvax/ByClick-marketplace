@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\DeliveryMethod;
 use Database\Factories\CartFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -160,11 +161,16 @@ class Cart extends Model
     }
 
     /**
-     * Delivery price in kopecks: free above the configured threshold.
+     * Delivery price for a specific delivery method.
+     * Pickup points and postamats are always free.
      */
-    public function deliveryPrice(): int
+    public function deliveryPriceFor(?DeliveryMethod $method = null): int
     {
         if ($this->subtotal() === 0) {
+            return 0;
+        }
+
+        if ($method !== null && $method !== DeliveryMethod::Courier) {
             return 0;
         }
 
@@ -173,6 +179,14 @@ class Cart extends Model
         return $this->subtotal() - $this->discount() >= $freeFrom
             ? 0
             : (int) config('marketplace.delivery.courier_price', 500);
+    }
+
+    /**
+     * Delivery price using the default courier method.
+     */
+    public function deliveryPrice(): int
+    {
+        return $this->deliveryPriceFor(DeliveryMethod::Courier);
     }
 
     /**

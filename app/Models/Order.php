@@ -91,6 +91,14 @@ class Order extends Model
     }
 
     /**
+     * Orders are addressed by their public number in URLs.
+     */
+    public function getRouteKeyName(): string
+    {
+        return 'number';
+    }
+
+    /**
      * Generate a unique public order number.
      */
     public static function generateNumber(): string
