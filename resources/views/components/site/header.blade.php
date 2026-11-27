@@ -94,7 +94,7 @@
                 </div>
             </div>
 
-            <form class="va_search" role="search" action="{{ url('/search') }}" method="get" autocomplete="off">
+            <form class="va_search" role="search" action="{{ url('/catalog') }}" method="get" autocomplete="off">
                 <label class="va_visually-hidden" for="va-search-input">Поиск по каталогу</label>
                 <div class="va_search__field">
                     <svg class="va_search__icon va_icon" aria-hidden="true"><use href="#va-i-search" /></svg>

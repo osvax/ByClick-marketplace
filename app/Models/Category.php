@@ -65,6 +65,30 @@ class Category extends Model
         return $this->parent_id === null;
     }
 
+    /**
+     * Count active products for every root category, including child categories.
+     *
+     * @return array<int, int>
+     */
+    public static function activeProductCounts(): array
+    {
+        $counts = Product::query()
+            ->active()
+            ->selectRaw('category_id, count(*) as total')
+            ->groupBy('category_id')
+            ->pluck('total', 'category_id');
+
+        return static::query()
+            ->roots()
+            ->with('children')
+            ->get()
+            ->mapWithKeys(fn (self $root): array => [
+                $root->id => (int) ($counts[$root->id] ?? 0)
+                    + $root->children->sum(fn (self $child): int => (int) ($counts[$child->id] ?? 0)),
+            ])
+            ->all();
+    }
+
     /** @param Builder<Category> $query */
     #[Scope]
     protected function active(Builder $query): void

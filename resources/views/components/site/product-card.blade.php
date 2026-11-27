@@ -6,7 +6,7 @@
     $image = $product->mainImage?->url() ?? asset('images/products/placeholder.svg');
 @endphp
 
-<article class="va_product-card">
+<article {{ $attributes->class(['va_product-card']) }}>
     <div class="va_product-card__media">
         <div class="va_product-card__badges">
             @if ($product->hasDiscount())

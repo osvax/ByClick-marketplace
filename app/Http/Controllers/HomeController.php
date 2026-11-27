@@ -42,23 +42,12 @@ class HomeController extends Controller
             ->with(['children' => fn ($query) => $query->where('is_active', true)])
             ->get();
 
-        $productsByCategory = Product::query()
-            ->active()
-            ->selectRaw('category_id, count(*) as total')
-            ->groupBy('category_id')
-            ->pluck('total', 'category_id');
-
-        $categoryCounts = $categories->mapWithKeys(fn (Category $category): array => [
-            $category->id => (int) ($productsByCategory[$category->id] ?? 0)
-                + $category->children->sum(fn (Category $child): int => (int) ($productsByCategory[$child->id] ?? 0)),
-        ]);
-
         return view('home', [
             'saleProducts' => $saleProducts,
             'hitProducts' => $hitProducts,
             'recommended' => $recommended,
             'categories' => $categories,
-            'categoryCounts' => $categoryCounts,
+            'categoryCounts' => Category::activeProductCounts(),
         ]);
     }
 }
