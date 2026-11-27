@@ -4,6 +4,7 @@
     $category = $product->category?->parent ?? $product->category;
     $url = url('/product/'.$product->slug);
     $image = $product->mainImage?->url() ?? asset('images/products/placeholder.svg');
+    $isFavorite = in_array($product->id, $favoriteProductIds ?? [], true);
 @endphp
 
 <article {{ $attributes->class(['va_product-card']) }}>
@@ -17,7 +18,13 @@
             @endif
         </div>
 
-        <button class="va_product-card__fav" type="button" aria-label="Добавить в избранное" aria-pressed="false" data-va-fav>
+        <button
+            @class(['va_product-card__fav', 'is-active' => $isFavorite])
+            type="button"
+            aria-label="{{ $isFavorite ? 'Убрать из избранного' : 'Добавить в избранное' }}"
+            aria-pressed="{{ $isFavorite ? 'true' : 'false' }}"
+            data-va-fav="{{ $product->id }}"
+        >
             <svg class="va_icon" aria-hidden="true"><use href="#va-i-heart" /></svg>
         </button>
 

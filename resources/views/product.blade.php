@@ -182,11 +182,11 @@
                             </button>
 
                             <button
-                                class="va_btn va_btn--icon"
+                                @class(['va_btn', 'va_btn--icon', 'is-active' => $isFavorite])
                                 type="button"
-                                aria-pressed="false"
-                                aria-label="Добавить в избранное"
-                                data-va-demo-toast="Демо-режим: избранное появится на следующем шаге"
+                                aria-pressed="{{ $isFavorite ? 'true' : 'false' }}"
+                                aria-label="{{ $isFavorite ? 'Убрать из избранного' : 'Добавить в избранное' }}"
+                                data-va-fav="{{ $product->id }}"
                             >
                                 <svg class="va_icon" aria-hidden="true"><use href="#va-i-heart" /></svg>
                             </button>

@@ -120,10 +120,10 @@
                     <svg class="va_icon" aria-hidden="true"><use href="#va-i-check" /></svg>
                     <span class="va_action__label">Заказы</span>
                 </a>
-                <a class="va_action va_action--fav" href="{{ url('/favorites') }}">
+                <a class="va_action va_action--fav" href="{{ route('favorites') }}">
                     <svg class="va_icon" aria-hidden="true"><use href="#va-i-heart" /></svg>
                     <span class="va_action__label">Избранное</span>
-                    <span class="va_action__count" data-va-fav-count hidden>0</span>
+                    <span class="va_action__count" data-va-fav-count @if ($favoritesCount === 0) hidden @endif>{{ $favoritesCount }}</span>
                 </a>
                 <button class="va_action va_action--cart" type="button" data-va-cart-open aria-label="Открыть корзину">
                     <svg class="va_icon" aria-hidden="true"><use href="#va-i-cart" /></svg>

@@ -153,7 +153,25 @@ function initCartButtons() {
 }
 
 /**
- * Общие события Livewire: счётчик в шапке, блокировка скролла и тосты.
+ * Кнопки-сердечки в карточках и на странице товара.
+ * Вся работа с БД — в Livewire-компоненте FavoriteSync.
+ */
+function initFavoriteButtons() {
+  document.addEventListener('click', (event) => {
+    const button = event.target.closest('[data-va-fav]');
+
+    if (!button || !window.Livewire) return;
+
+    const productId = Number(button.dataset.vaFav);
+
+    if (!productId) return;
+
+    window.Livewire.dispatch('favorite-toggle', { productId });
+  });
+}
+
+/**
+ * Общие события Livewire: счётчики в шапке, блокировка скролла и тосты.
  */
 function initLivewireEvents() {
   const register = () => {
@@ -161,6 +179,24 @@ function initLivewireEvents() {
       document.querySelectorAll('[data-va-cart-count]').forEach((badge) => {
         badge.textContent = String(count ?? 0);
         badge.hidden = !count;
+      });
+    });
+
+    Livewire.on('favorites-updated', ({ count, productId, active }) => {
+      document.querySelectorAll('[data-va-fav-count]').forEach((badge) => {
+        badge.textContent = String(count ?? 0);
+        badge.hidden = !count;
+      });
+
+      if (!productId) return;
+
+      document.querySelectorAll(`[data-va-fav="${productId}"]`).forEach((button) => {
+        button.classList.toggle('is-active', Boolean(active));
+        button.setAttribute('aria-pressed', active ? 'true' : 'false');
+        button.setAttribute(
+          'aria-label',
+          active ? 'Убрать из избранного' : 'Добавить в избранное',
+        );
       });
     });
 
@@ -188,6 +224,7 @@ export function initHeader() {
   initMenu();
   initCartDrawer();
   initCartButtons();
+  initFavoriteButtons();
   initLivewireEvents();
 
   document.querySelectorAll('[data-va-demo-toast]').forEach((button) => {

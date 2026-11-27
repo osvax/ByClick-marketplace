@@ -36,6 +36,7 @@
         <x-site.footer />
         <x-site.menu />
         <x-site.cart-drawer />
+        <livewire:favorite-sync />
         <x-site.toast />
 
         @livewireScripts

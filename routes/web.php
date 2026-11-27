@@ -9,5 +9,6 @@ Route::get('/', HomeController::class)->name('home');
 Route::view('/catalog', 'catalog')->name('catalog');
 Route::get('/product/{product:slug}', [ProductController::class, 'show'])->name('product.show');
 Route::view('/cart', 'cart')->name('cart');
+Route::view('/favorites', 'favorites')->name('favorites');
 Route::view('/checkout', 'checkout')->name('checkout');
 Route::get('/checkout/success/{order:number}', [CheckoutSuccessController::class, 'show'])->name('checkout.success');

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Favorite;
 use App\Models\Product;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Collection;
@@ -66,6 +67,7 @@ class ProductController extends Controller
             'bundleProducts' => $bundleProducts,
             'bundleDiscount' => $bundleDiscount,
             'breadcrumbs' => $this->breadcrumbs($product),
+            'isFavorite' => Favorite::isFavorited($product->id),
         ]);
     }
 

@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Cart;
 use App\Models\Category;
+use App\Models\Favorite;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Date;
@@ -44,12 +45,20 @@ class AppServiceProvider extends ServiceProvider
             ->get();
 
         $loadCartCount = fn (): int => Cart::currentCart()?->totalQuantity() ?? 0;
+        $loadFavoritesCount = fn (): int => Favorite::countForCurrent();
+        $loadFavoriteIds = fn (): array => Favorite::idsForCurrent();
 
-        View::composer(['components.site.header', 'components.site.menu'], function (\Illuminate\View\View $view) use ($loadCategories, $loadCartCount): void {
+        View::composer(['components.site.header', 'components.site.menu'], function (\Illuminate\View\View $view) use ($loadCategories, $loadCartCount, $loadFavoritesCount): void {
             $view->with([
                 'categories' => once($loadCategories),
                 'cartCount' => once($loadCartCount),
+                'favoritesCount' => once($loadFavoritesCount),
             ]);
+        });
+
+        // Product cards highlight the heart for products in the current favorites.
+        View::composer('components.site.product-card', function (\Illuminate\View\View $view) use ($loadFavoriteIds): void {
+            $view->with('favoriteProductIds', once($loadFavoriteIds));
         });
     }
 
