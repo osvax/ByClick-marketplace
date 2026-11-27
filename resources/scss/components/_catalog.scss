@@ -1,0 +1,464 @@
+// ============================================================
+//  Каталог: раскладка, фильтры, панель сортировки, чипы
+// ============================================================
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+
+.va_catalog-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 20px;
+
+  @include media-up(900px) {
+    grid-template-columns: 264px minmax(0, 1fr);
+    gap: 28px;
+    align-items: start;
+  }
+}
+
+// --- Фильтры ---
+.va_filters {
+  @include media-down(900px) {
+    position: fixed;
+    inset: 0;
+    z-index: 140;
+    visibility: hidden;
+    transition: visibility 0s linear 0.3s;
+
+    &.is-open {
+      visibility: visible;
+      transition-delay: 0s;
+    }
+  }
+
+  &__overlay {
+    display: none;
+
+    @include media-down(900px) {
+      position: absolute;
+      inset: 0;
+      display: block;
+      background: rgba(12, 15, 26, 0.5);
+      opacity: 0;
+      transition: opacity 0.3s var(--va-ease);
+    }
+  }
+
+  &__panel {
+    @include media-down(900px) {
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: flex;
+      flex-direction: column;
+      width: min(360px, 90vw);
+      height: 100%;
+      padding: 14px 18px calc(18px + env(safe-area-inset-bottom));
+      overflow-y: auto;
+      background: var(--va-surface);
+      box-shadow: var(--va-shadow-lg);
+      transform: translateX(-100%);
+      transition: transform 0.3s var(--va-ease);
+    }
+
+    @include media-up(900px) {
+      position: sticky;
+      top: 180px;
+      padding: 4px 18px 18px;
+      background: var(--va-surface);
+      border: 1px solid var(--va-line);
+      border-radius: var(--va-radius-md);
+    }
+  }
+
+  &.is-open &__overlay {
+    opacity: 1;
+  }
+
+  &.is-open &__panel {
+    transform: translateX(0);
+  }
+
+  &__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-bottom: 10px;
+    margin-bottom: 4px;
+    border-bottom: 1px solid var(--va-line);
+
+    @include media-up(900px) {
+      display: none;
+    }
+  }
+
+  &__title {
+    font-size: 18px;
+    font-weight: 800;
+  }
+
+  &__foot {
+    display: flex;
+    gap: 10px;
+    padding-top: 14px;
+    margin-top: 8px;
+    border-top: 1px solid var(--va-line);
+
+    @include media-up(900px) {
+      display: none;
+    }
+
+    @include media-down(900px) {
+      position: sticky;
+      bottom: -18px;
+      margin: 8px -18px -18px;
+      padding: 12px 18px calc(12px + env(safe-area-inset-bottom));
+      background: var(--va-surface);
+      box-shadow: 0 -10px 24px rgba(14, 22, 48, 0.08);
+
+      .va_btn {
+        flex: 1 1 0;
+      }
+    }
+  }
+}
+
+.va_filter {
+  padding: 16px 0;
+  border: 0;
+  border-top: 1px solid var(--va-line);
+
+  &:first-of-type {
+    border-top: 0;
+    padding-top: 6px;
+  }
+
+  &__legend {
+    width: 100%;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  &__option {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 5px 0;
+    font-size: 13.5px;
+    color: var(--va-ink-2);
+    cursor: pointer;
+    transition: color var(--va-dur) var(--va-ease);
+
+    &:hover {
+      color: var(--va-ink);
+    }
+
+    input {
+      width: 17px;
+      height: 17px;
+      accent-color: var(--va-brand);
+      cursor: pointer;
+    }
+  }
+
+  &__price {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  &__price-sep {
+    color: var(--va-ink-3);
+  }
+}
+
+// --- Двойной ползунок цены ---
+.va_range {
+  margin-top: 2px;
+
+  &__values {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 12px;
+    color: var(--va-ink-3);
+  }
+
+  &__value {
+    font-weight: 700;
+    color: var(--va-ink);
+  }
+
+  &__slider {
+    position: relative;
+    height: 30px;
+    margin: 2px 0 4px;
+  }
+
+  &__track,
+  &__fill {
+    position: absolute;
+    top: 50%;
+    height: 4px;
+    margin-top: -2px;
+    border-radius: var(--va-radius-pill);
+  }
+
+  &__track {
+    right: 0;
+    left: 0;
+    background: var(--va-line-strong);
+  }
+
+  &__fill {
+    background: var(--va-brand);
+  }
+
+  input[type='range'] {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 30px;
+    margin: 0;
+    background: none;
+    appearance: none;
+    pointer-events: none;
+    cursor: pointer;
+
+    &[data-va-range-min-input] {
+      z-index: 3;
+    }
+
+    &[data-va-range-max-input] {
+      z-index: 4;
+    }
+  }
+
+  input[type='range']::-webkit-slider-runnable-track {
+    height: 30px;
+    background: transparent;
+  }
+
+  input[type='range']::-webkit-slider-thumb {
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    margin-top: 6px;
+    background: #fff;
+    border: 2px solid var(--va-brand);
+    border-radius: 50%;
+    box-shadow: 0 2px 6px rgba(14, 22, 48, 0.18);
+    cursor: grab;
+    pointer-events: auto;
+    transition:
+      transform var(--va-dur) var(--va-ease),
+      box-shadow var(--va-dur) var(--va-ease);
+  }
+
+  input[type='range']:active::-webkit-slider-thumb {
+    cursor: grabbing;
+    transform: scale(1.12);
+  }
+
+  input[type='range']:focus-visible::-webkit-slider-thumb {
+    box-shadow: 0 0 0 4px var(--va-brand-ghost);
+  }
+
+  input[type='range']::-moz-range-track {
+    height: 30px;
+    background: transparent;
+    border: 0;
+  }
+
+  input[type='range']::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    background: #fff;
+    border: 2px solid var(--va-brand);
+    border-radius: 50%;
+    box-shadow: 0 2px 6px rgba(14, 22, 48, 0.18);
+    cursor: grab;
+    pointer-events: auto;
+  }
+
+  input[type='range']:focus-visible::-moz-range-thumb {
+    box-shadow: 0 0 0 4px var(--va-brand-ghost);
+  }
+}
+
+.va_input {
+  width: 100%;
+  height: 40px;
+  padding: 0 11px;
+  font-size: 13.5px;
+  color: var(--va-ink);
+  background: var(--va-surface);
+  border: 1px solid var(--va-line);
+  border-radius: var(--va-radius-xs);
+  outline: none;
+  transition:
+    border-color var(--va-dur) var(--va-ease),
+    box-shadow var(--va-dur) var(--va-ease);
+
+  &::placeholder {
+    color: var(--va-ink-3);
+  }
+
+  &:focus {
+    border-color: var(--va-brand);
+    box-shadow: 0 0 0 3px var(--va-brand-ghost);
+  }
+}
+
+// --- Панель над результатами ---
+.va_toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 16px;
+  margin-bottom: 14px;
+
+  &__count {
+    font-size: 13px;
+    color: var(--va-ink-2);
+
+    b {
+      color: var(--va-ink);
+    }
+  }
+
+  &__sort {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--va-ink-3);
+  }
+
+  &__filters {
+    @include media-up(900px) {
+      display: none;
+    }
+  }
+}
+
+.va_select {
+  height: 40px;
+  padding: 0 34px 0 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--va-ink);
+  background-color: var(--va-surface);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236f7588' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m5 9 7 7 7-7'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  border: 1px solid var(--va-line);
+  border-radius: var(--va-radius-xs);
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+
+  &:focus {
+    border-color: var(--va-brand);
+    box-shadow: 0 0 0 3px var(--va-brand-ghost);
+  }
+}
+
+.va_btn--outline {
+  color: var(--va-ink);
+  background: var(--va-surface);
+  border: 1px solid var(--va-line-strong);
+
+  &:hover {
+    border-color: var(--va-brand);
+    color: var(--va-brand);
+  }
+}
+
+// --- Активные фильтры ---
+.va_chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.va_chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 5px 0 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--va-brand);
+  background: var(--va-brand-soft);
+  border-radius: var(--va-radius-pill);
+
+  &__remove {
+    @include reset-button;
+    display: grid;
+    place-items: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    transition: background-color var(--va-dur) var(--va-ease);
+
+    .va_icon {
+      width: 12px;
+      height: 12px;
+    }
+
+    &:hover {
+      background: rgba(106, 59, 255, 0.14);
+    }
+
+    @include focus-ring(1px);
+  }
+}
+
+// --- Пустой результат ---
+.va_catalog-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: clamp(40px, 8vw, 72px) 20px;
+  text-align: center;
+  background: var(--va-surface);
+  border: 1px solid var(--va-line);
+  border-radius: var(--va-radius-lg);
+
+  &__icon {
+    display: grid;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    margin-bottom: 4px;
+    color: var(--va-ink-3);
+    background: var(--va-surface-2);
+    border-radius: 50%;
+
+    .va_icon {
+      width: 28px;
+      height: 28px;
+    }
+  }
+
+  &__title {
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  &__text {
+    max-width: 360px;
+    margin-bottom: 8px;
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: var(--va-ink-2);
+  }
+}

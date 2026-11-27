@@ -1,0 +1,345 @@
+// ============================================================
+//  Страница корзины
+// ============================================================
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+
+.va_cart-page {
+  padding-top: 4px;
+
+  &__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 10px 20px;
+    margin-bottom: clamp(16px, 2.4vw, 24px);
+  }
+}
+
+.va_link-btn {
+  @include reset-button;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--va-ink-2);
+  border-bottom: 1px solid transparent;
+  transition:
+    color var(--va-dur) var(--va-ease),
+    border-color var(--va-dur) var(--va-ease);
+
+  &:hover {
+    color: var(--va-sale);
+    border-color: currentColor;
+  }
+
+  @include focus-ring(2px);
+}
+
+.va_cart-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 20px;
+
+  @include media-up(960px) {
+    grid-template-columns: minmax(0, 1fr) 360px;
+    gap: 28px;
+    align-items: start;
+  }
+}
+
+.va_cart-lines {
+  background: var(--va-surface);
+  border: 1px solid var(--va-line);
+  border-radius: var(--va-radius-md);
+  padding: 0 clamp(14px, 2vw, 22px);
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.va_cart-line {
+  display: grid;
+  grid-template-columns: 76px minmax(0, 1fr) auto;
+  grid-template-areas:
+    'img body sum'
+    'img controls sum';
+  gap: 6px 14px;
+  align-items: center;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--va-line);
+
+  @include media-up($va-bp-md) {
+    grid-template-columns: 96px minmax(0, 1fr) 150px 120px;
+    grid-template-areas: 'img body controls sum';
+    gap: 18px;
+  }
+
+  &:last-child {
+    border-bottom: 0;
+  }
+
+  &__img {
+    grid-area: img;
+    width: 76px;
+    height: 76px;
+    object-fit: contain;
+    background: var(--va-surface-2);
+    border-radius: var(--va-radius-sm);
+
+    @include media-up($va-bp-md) {
+      width: 96px;
+      height: 96px;
+    }
+  }
+
+  &__body {
+    grid-area: body;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+  }
+
+  &__title {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.35;
+    transition: color var(--va-dur) var(--va-ease);
+
+    &:hover {
+      color: var(--va-brand);
+    }
+
+    @include line-clamp(2);
+
+    @include media-up($va-bp-md) {
+      font-size: 15px;
+    }
+  }
+
+  &__meta {
+    font-size: 11.5px;
+    color: var(--va-ink-3);
+  }
+
+  &__price {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-top: 2px;
+
+    .va_price {
+      font-size: 15px;
+    }
+  }
+
+  &__controls {
+    grid-area: controls;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+
+    @include media-up($va-bp-md) {
+      justify-content: flex-start;
+    }
+  }
+
+  &__remove {
+    @include reset-button;
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    color: var(--va-ink-3);
+    border-radius: 50%;
+    transition:
+      color var(--va-dur) var(--va-ease),
+      background-color var(--va-dur) var(--va-ease);
+
+    .va_icon {
+      width: 17px;
+      height: 17px;
+    }
+
+    &:hover {
+      color: var(--va-sale);
+      background: var(--va-sale-soft);
+    }
+
+    @include focus-ring(2px);
+  }
+
+  &__sum {
+    grid-area: sum;
+    align-self: center;
+    font-size: 16px;
+    font-weight: 800;
+    text-align: right;
+    white-space: nowrap;
+
+    @include media-up($va-bp-md) {
+      font-size: 17px;
+    }
+  }
+}
+
+// --- Итоги ---
+.va_summary {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: clamp(16px, 2.2vw, 22px);
+  background: var(--va-surface);
+  border: 1px solid var(--va-line);
+  border-radius: var(--va-radius-md);
+
+  @include media-up(960px) {
+    position: sticky;
+    top: 180px;
+  }
+
+  &__title {
+    margin-bottom: 4px;
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  &__row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 14px;
+    color: var(--va-ink-2);
+  }
+
+  &__old {
+    color: var(--va-ink-3);
+    text-decoration: line-through;
+  }
+
+  &__discount {
+    font-weight: 600;
+    color: var(--va-sale);
+  }
+
+  &__free {
+    font-weight: 600;
+    color: var(--va-mint);
+  }
+
+  &__total {
+    margin-top: 4px;
+    padding-top: 12px;
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--va-ink);
+    border-top: 1px dashed var(--va-line);
+  }
+
+  &__savings {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 9px 12px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--va-mint);
+    background: var(--va-mint-soft);
+    border-radius: var(--va-radius-xs);
+
+    .va_icon {
+      width: 15px;
+      height: 15px;
+    }
+
+    b {
+      font-weight: 800;
+    }
+  }
+
+  &__promo {
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
+
+    .va_input {
+      flex: 1 1 auto;
+      min-width: 0;
+      height: 40px;
+    }
+
+    .va_btn {
+      min-height: 40px;
+      padding-inline: 16px;
+      font-size: 13px;
+    }
+  }
+
+  &__message {
+    font-size: 12px;
+    line-height: 1.4;
+    color: var(--va-mint);
+  }
+
+  &__hint {
+    font-size: 11px;
+    line-height: 1.4;
+    text-align: center;
+    color: var(--va-ink-3);
+  }
+
+  &__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 14px;
+    margin-top: 2px;
+    font-size: 12px;
+
+    a {
+      color: var(--va-ink-2);
+      transition: color var(--va-dur) var(--va-ease);
+
+      &:hover {
+        color: var(--va-brand);
+      }
+    }
+  }
+}
+
+// --- Пустая корзина ---
+.va_cart-page__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: clamp(44px, 8vw, 90px) 20px;
+  text-align: center;
+  background: var(--va-surface);
+  border: 1px solid var(--va-line);
+  border-radius: var(--va-radius-lg);
+
+  .va_cart-empty__icon {
+    width: 80px;
+    height: 80px;
+
+    .va_icon {
+      width: 36px;
+      height: 36px;
+    }
+  }
+
+  .va_cart-empty__title {
+    font-size: 22px;
+    letter-spacing: -0.02em;
+  }
+
+  .va_cart-empty__text {
+    max-width: 380px;
+    font-size: 14px;
+  }
+}

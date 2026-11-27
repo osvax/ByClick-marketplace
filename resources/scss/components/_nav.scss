@@ -1,0 +1,49 @@
+// ============================================================
+//  Навигация по категориям
+// ============================================================
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+
+.va_nav {
+  background: var(--va-surface);
+  border-top: 1px solid var(--va-line);
+
+  &__list {
+    display: flex;
+    align-items: center;
+    gap: clamp(14px, 2.2vw, 30px);
+    padding-block: 10px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    @include media-up($va-bp-lg) {
+      padding-block: 12px;
+    }
+  }
+
+  &__link {
+    display: block;
+    font-size: 13px;
+    color: var(--va-ink-2);
+    white-space: nowrap;
+    transition: color var(--va-dur) var(--va-ease);
+
+    &:hover {
+      color: var(--va-brand);
+    }
+
+    @include media-up($va-bp-md) {
+      font-size: 14px;
+    }
+
+    &--accent {
+      font-weight: 600;
+      color: var(--va-sale);
+    }
+  }
+}

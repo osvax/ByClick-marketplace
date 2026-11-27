@@ -31,12 +31,13 @@
 
 ## Этап 2. Дизайн-система и каркас
 
-- [ ] Перенос `src/scss` → `resources/scss` (24 файла, без переписывания)
-- [ ] Шрифт Inter, спрайт SVG-иконок, favicon
-- [ ] `layouts/app.blade.php` + Blade-компоненты: header, footer, drawer, toast, breadcrumbs
-- [ ] `x-product-card`, `x-rating`, `x-price`, `x-badge`
-- [ ] Подключение SCSS через Vite, проверка главной на `/`
-- [ ] Базовые SEO-компоненты (title, description, canonical)
+- [x] Перенос `src/scss` → `resources/scss` (24 файла, без переписывания)
+- [x] Шрифт Inter (локальные woff2), спрайт SVG-иконок, favicon, логотип
+- [x] `layouts/app.blade.php` + Blade-компоненты: header, footer, drawer, toast, breadcrumbs
+- [x] `x-product-card`, `x-rating`, `x-price`, `x-badge`, `x-plural`
+- [x] Подключение SCSS через Vite (`sass` как build-зависимость), главная на `/` с данными из БД
+- [x] Базовые SEO-компоненты (title, description, canonical)
+- [x] Vanilla-JS для меню, каталога, корзины-drawer, слайдера и таймера
 
 ## Этап 3. Публичная часть (вертикальные срезы)
 

@@ -1,0 +1,199 @@
+// ============================================================
+//  Карточка товара
+// ============================================================
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+
+.va_product-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--va-surface);
+  border: 1px solid var(--va-line);
+  border-radius: var(--va-radius-md);
+  transition:
+    transform var(--va-dur) var(--va-ease),
+    box-shadow var(--va-dur) var(--va-ease),
+    border-color var(--va-dur) var(--va-ease);
+
+  &:hover {
+    transform: translateY(-4px);
+    border-color: var(--va-line-strong);
+    box-shadow: var(--va-shadow);
+  }
+
+  &.is-highlight {
+    animation: va-highlight 1.6s var(--va-ease);
+  }
+
+  @include media-up($va-bp-lg) {
+    border-radius: var(--va-radius-lg);
+  }
+
+  &__media {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    background: var(--va-surface-2);
+  }
+
+  &__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s var(--va-ease);
+  }
+
+  &:hover &__img {
+    transform: scale(1.04);
+  }
+
+  &__link {
+    display: block;
+    width: 100%;
+    height: 100%;
+
+    @include focus-ring(-3px);
+  }
+
+  &__badges {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+    pointer-events: none;
+  }
+
+  &__fav {
+    @include reset-button;
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 3;
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    color: var(--va-ink-2);
+    background: rgba(255, 255, 255, 0.94);
+    border-radius: 50%;
+    box-shadow: var(--va-shadow-sm);
+    transition:
+      color var(--va-dur) var(--va-ease),
+      background-color var(--va-dur) var(--va-ease),
+      transform var(--va-dur) var(--va-ease);
+
+    .va_icon {
+      width: 18px;
+      height: 18px;
+    }
+
+    &:hover {
+      color: var(--va-sale);
+      transform: scale(1.06);
+    }
+
+    &.is-active {
+      color: var(--va-sale);
+
+      .va_icon {
+        fill: currentColor;
+      }
+    }
+
+    @include focus-ring(2px);
+  }
+
+  &__body {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: 5px;
+    padding: clamp(10px, 1.2vw, 15px);
+  }
+
+  &__meta {
+    font-size: 11px;
+    line-height: 1.2;
+    color: var(--va-ink-3);
+  }
+
+  &__title {
+    font-size: clamp(13px, 1.15vw, 15px);
+    font-weight: 600;
+    line-height: 1.35;
+    @include line-clamp(2);
+
+    // фиксируем высоту под две строки, чтобы цены стояли в одну линию
+    min-height: calc(2em * 1.35);
+
+    a {
+      transition: color var(--va-dur) var(--va-ease);
+
+      &:hover {
+        color: var(--va-brand);
+      }
+    }
+  }
+
+  &__prices {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 8px;
+    margin-top: 1px;
+  }
+
+  &__delivery {
+    margin-bottom: 2px;
+    font-size: 11.5px;
+    line-height: 1.3;
+    color: var(--va-mint);
+  }
+
+  .va_btn--cart {
+    margin-top: auto;
+
+    &.is-added {
+      color: var(--va-mint);
+      background: var(--va-mint-soft);
+
+      &:hover {
+        color: #fff;
+        background: var(--va-mint);
+      }
+    }
+  }
+}
+
+.va_price {
+  font-size: clamp(17px, 1.7vw, 21px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  white-space: nowrap;
+
+  &--old {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--va-ink-3);
+    text-decoration: line-through;
+    white-space: nowrap;
+  }
+}
+
+@keyframes va-highlight {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(91, 47, 240, 0);
+  }
+  25%,
+  75% {
+    box-shadow: 0 0 0 4px rgba(91, 47, 240, 0.35);
+  }
+}

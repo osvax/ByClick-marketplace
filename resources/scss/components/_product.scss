@@ -1,0 +1,1512 @@
+// ============================================================
+//  Страница товара: галерея, покупка, комплект, отзывы, вопросы
+// ============================================================
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+
+.va_product-page {
+  padding-top: 4px;
+}
+
+.va_product-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 24px;
+
+  @include media-up(1024px) {
+    grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+    gap: clamp(28px, 4vw, 52px);
+    align-items: start;
+  }
+}
+
+// --- Галерея ---
+.va_gallery {
+  display: grid;
+  gap: 12px;
+
+  @include media-up(480px) {
+    grid-template-columns: 84px minmax(0, 1fr);
+    align-items: start;
+  }
+
+  &__thumbs {
+    display: flex;
+    gap: 10px;
+    order: 2;
+    overflow-x: auto;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    @include media-up(480px) {
+      flex-direction: column;
+      order: 1;
+      overflow: visible;
+      padding-bottom: 0;
+    }
+  }
+
+  &__thumb {
+    @include reset-button;
+    position: relative;
+    flex: 0 0 auto;
+    width: 74px;
+    height: 74px;
+    overflow: hidden;
+    background: var(--va-surface-2);
+    border: 1px solid var(--va-line);
+    border-radius: var(--va-radius-sm);
+    transition:
+      border-color var(--va-dur) var(--va-ease),
+      box-shadow var(--va-dur) var(--va-ease);
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      transition: transform var(--va-dur) var(--va-ease);
+    }
+
+    &:hover {
+      border-color: var(--va-line-strong);
+    }
+
+    &.is-active {
+      border-color: var(--va-brand);
+      box-shadow: 0 0 0 2px var(--va-brand-ghost);
+    }
+
+    @include media-up(480px) {
+      width: 84px;
+      height: 84px;
+    }
+
+    @include focus-ring(2px);
+
+    &--video {
+      background: var(--va-surface-2);
+    }
+  }
+
+  &__play {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    color: #fff;
+    background: rgba(14, 22, 48, 0.42);
+
+    .va_icon {
+      width: 26px;
+      height: 26px;
+    }
+  }
+
+  &__video-label {
+    position: absolute;
+    right: 4px;
+    bottom: 4px;
+    padding: 1px 6px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #fff;
+    background: rgba(14, 22, 48, 0.65);
+    border-radius: 4px;
+  }
+
+  &__main {
+    position: relative;
+    order: 1;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    cursor: zoom-in;
+    background: var(--va-surface-2);
+    border: 1px solid var(--va-line);
+    border-radius: var(--va-radius-lg);
+
+    > img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      transition:
+        filter 0.3s var(--va-ease),
+        transform 0.3s var(--va-ease);
+    }
+
+    .va_badge {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      z-index: 3;
+    }
+
+    @include media-up(480px) {
+      order: 2;
+    }
+  }
+
+  &__zoom {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    overflow: hidden;
+    pointer-events: none;
+    opacity: 0;
+    background: var(--va-surface-2);
+    transition: opacity 0.16s var(--va-ease);
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      transform: scale(2);
+      transform-origin: center center;
+    }
+  }
+
+  &__main.is-zoomed &__zoom {
+    opacity: 1;
+  }
+
+  &__main.is-zoomed &__hint {
+    opacity: 0;
+  }
+
+  &__hint {
+    position: absolute;
+    left: 12px;
+    bottom: 12px;
+    z-index: 4;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 9px;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--va-ink-2);
+    pointer-events: none;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid var(--va-line);
+    border-radius: var(--va-radius-pill);
+    backdrop-filter: blur(4px);
+    transition: opacity var(--va-dur) var(--va-ease);
+
+    .va_icon {
+      width: 13px;
+      height: 13px;
+    }
+
+    @media (hover: none) {
+      display: none;
+    }
+  }
+
+  &__expand {
+    @include reset-button;
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 4;
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    color: var(--va-ink-2);
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid var(--va-line);
+    border-radius: 50%;
+    transition:
+      color var(--va-dur) var(--va-ease),
+      background-color var(--va-dur) var(--va-ease);
+
+    .va_icon {
+      width: 18px;
+      height: 18px;
+    }
+
+    &:hover {
+      color: var(--va-brand);
+      background: #fff;
+    }
+
+    @include focus-ring(3px);
+  }
+}
+
+// --- Информация ---
+.va_product-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+
+  &__meta {
+    margin-top: 4px;
+    font-size: 12px;
+    color: var(--va-ink-3);
+  }
+
+  &__rating {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 14px;
+    margin: 10px 0 2px;
+    font-size: 12.5px;
+    color: var(--va-ink-2);
+  }
+
+  &__sold {
+    color: var(--va-ink-3);
+  }
+
+  &__prices {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 8px 10px;
+    margin: 16px 0 4px;
+  }
+
+  &__price {
+    font-size: clamp(30px, 3.2vw, 38px);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.035em;
+  }
+
+  &__old {
+    font-size: 16px;
+    color: var(--va-ink-3);
+    text-decoration: line-through;
+  }
+
+  &__sale {
+    padding: 3px 8px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--va-sale);
+    background: var(--va-sale-soft);
+    border-radius: var(--va-radius-xs);
+  }
+
+  &__bonus {
+    padding: 3px 8px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--va-mint);
+    background: var(--va-mint-soft);
+    border-radius: var(--va-radius-xs);
+  }
+
+  &__short {
+    margin: 14px 0 4px;
+    padding: 14px 16px;
+    background: var(--va-surface-2);
+    border: 1px solid var(--va-line);
+    border-radius: var(--va-radius-md);
+
+    h2 {
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    ul {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 10px;
+      font-size: 13px;
+      line-height: 1.45;
+      color: var(--va-ink-2);
+
+      li {
+        display: flex;
+        gap: 8px;
+
+        &::before {
+          content: '';
+          flex: 0 0 auto;
+          width: 5px;
+          height: 5px;
+          margin-top: 7px;
+          background: var(--va-brand);
+          border-radius: 50%;
+        }
+      }
+    }
+  }
+
+  &__benefits {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px 12px;
+    margin-top: 14px;
+    font-size: 12.5px;
+    color: var(--va-ink-2);
+
+    li {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .va_icon {
+      width: 15px;
+      height: 15px;
+      color: var(--va-mint);
+    }
+  }
+}
+
+.va_rating--link {
+  transition: color var(--va-dur) var(--va-ease);
+
+  &:hover {
+    color: var(--va-brand);
+  }
+}
+
+.va_seller-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  margin-top: 12px;
+  background: var(--va-surface);
+  border: 1px solid var(--va-line);
+  border-radius: var(--va-radius-sm);
+
+  &__logo {
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    width: 36px;
+    height: 36px;
+    font-size: 12px;
+    font-weight: 800;
+    color: #fff;
+    background: linear-gradient(135deg, var(--va-brand), var(--va-brand-2));
+    border-radius: 10px;
+  }
+
+  &__body {
+    min-width: 0;
+  }
+
+  &__name {
+    font-size: 13.5px;
+    font-weight: 700;
+  }
+
+  &__meta {
+    font-size: 11.5px;
+    color: var(--va-ink-3);
+  }
+
+  &__star {
+    color: var(--va-amber);
+  }
+
+  .va_link-btn {
+    margin-left: auto;
+    flex: 0 0 auto;
+    font-size: 12px;
+    color: var(--va-brand);
+  }
+}
+
+// --- Блок покупки ---
+.va_buybox {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: clamp(14px, 2vw, 18px);
+  margin-top: 16px;
+  background:
+    radial-gradient(120% 140% at 100% 0%, rgba(106, 59, 255, 0.08), transparent 55%),
+    var(--va-surface);
+  border: 1px solid rgba(106, 59, 255, 0.28);
+  border-radius: var(--va-radius-md);
+  box-shadow: 0 10px 30px rgba(106, 59, 255, 0.08);
+
+  &__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px 12px;
+  }
+
+  &__label {
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+  }
+
+  &__stock {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--va-mint);
+  }
+
+  &__dot {
+    width: 7px;
+    height: 7px;
+    background: var(--va-mint);
+    border-radius: 50%;
+    box-shadow: 0 0 0 3px var(--va-mint-soft);
+  }
+
+  &__controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  &__delivery {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    padding-top: 12px;
+    margin-top: 2px;
+    font-size: 12.5px;
+    line-height: 1.35;
+    border-top: 1px dashed var(--va-line);
+
+    li {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .va_icon {
+      width: 17px;
+      height: 17px;
+      margin-top: 1px;
+      color: var(--va-brand);
+    }
+
+    span {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    strong {
+      font-weight: 600;
+      color: var(--va-ink);
+    }
+
+    small {
+      font-size: 11.5px;
+      color: var(--va-ink-3);
+    }
+  }
+
+  .va_btn--wide {
+    min-height: 44px;
+    font-size: 14px;
+  }
+}
+
+.va_qty--lg {
+  height: 52px;
+  border-radius: var(--va-radius-sm);
+
+  .va_qty__btn {
+    width: 38px;
+    height: 50px;
+  }
+
+  .va_qty__value {
+    min-width: 32px;
+    font-size: 15px;
+  }
+}
+
+.va_btn--buy {
+  flex: 1 1 160px;
+  min-height: 52px;
+  font-size: 15px;
+}
+
+@include media-down(480px) {
+  .va_buybox__controls {
+    gap: 6px;
+  }
+
+  .va_qty--lg {
+    .va_qty__btn {
+      width: 32px;
+    }
+
+    .va_qty__value {
+      min-width: 24px;
+    }
+  }
+
+  .va_btn--buy {
+    flex: 1 1 130px;
+    padding-inline: 10px;
+    font-size: 14px;
+  }
+
+  .va_btn--icon {
+    width: 46px;
+    min-height: 52px;
+  }
+}
+
+.va_btn--icon {
+  width: 52px;
+  min-height: 52px;
+  padding: 0;
+  color: var(--va-ink-2);
+  background: var(--va-surface);
+  border: 1px solid var(--va-line);
+
+  &:hover {
+    color: var(--va-sale);
+    border-color: var(--va-sale);
+  }
+
+  &.is-active {
+    color: var(--va-sale);
+    background: var(--va-sale-soft);
+    border-color: var(--va-sale);
+
+    .va_icon {
+      fill: currentColor;
+    }
+  }
+}
+
+.va_btn--wide {
+  width: 100%;
+  min-height: 46px;
+  font-size: 14px;
+  color: var(--va-brand);
+  background: var(--va-brand-soft);
+
+  &:hover {
+    color: #fff;
+    background: var(--va-brand);
+  }
+}
+
+.va_product-page .va_btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+// --- Комплект «Покупают вместе» ---
+.va_bundle-section {
+  .va_section__sub {
+    margin-top: 4px;
+    font-size: 13px;
+    color: var(--va-ink-2);
+  }
+}
+
+.va_bundle__save {
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--va-mint);
+  background: var(--va-mint-soft);
+  border-radius: var(--va-radius-pill);
+}
+
+.va_bundle {
+  display: grid;
+  gap: 16px;
+  padding: clamp(14px, 2.4vw, 22px);
+  background: var(--va-surface);
+  border: 1px solid var(--va-line);
+  border-radius: var(--va-radius-md);
+
+  @include media-up(900px) {
+    grid-template-columns: minmax(0, 1fr) 270px;
+    gap: 24px;
+    align-items: center;
+  }
+
+  &__items {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+
+    @include media-up(640px) {
+      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr);
+      align-items: stretch;
+    }
+  }
+
+  &__plus {
+    display: none;
+    align-self: center;
+    font-size: 20px;
+    font-weight: 300;
+    color: var(--va-ink-3);
+
+    @include media-up(640px) {
+      display: block;
+      text-align: center;
+    }
+  }
+
+  &__summary {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-top: 14px;
+    border-top: 1px dashed var(--va-line);
+
+    @include media-up(900px) {
+      padding: 4px 0 4px 22px;
+      border-top: 0;
+      border-left: 1px dashed var(--va-line);
+    }
+  }
+
+  &__summary-label {
+    font-size: 12px;
+    color: var(--va-ink-3);
+  }
+
+  &__total {
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+  }
+
+  &__hint {
+    font-size: 11px;
+    line-height: 1.4;
+    color: var(--va-ink-3);
+    text-align: center;
+  }
+}
+
+.va_bundle-item {
+  position: relative;
+  display: grid;
+  grid-template-columns: 82px minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  padding: 10px;
+  cursor: pointer;
+  background: var(--va-surface);
+  border: 1px solid var(--va-line);
+  border-radius: var(--va-radius-sm);
+  transition:
+    border-color var(--va-dur) var(--va-ease),
+    box-shadow var(--va-dur) var(--va-ease),
+    background-color var(--va-dur) var(--va-ease);
+
+  &:has(input:checked) {
+    background: var(--va-brand-ghost);
+    border-color: rgba(106, 59, 255, 0.4);
+  }
+
+  &:hover {
+    box-shadow: var(--va-shadow-sm);
+  }
+
+  &__check {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    z-index: 2;
+    width: 17px;
+    height: 17px;
+    accent-color: var(--va-brand);
+  }
+
+  &__media {
+    display: grid;
+    place-items: center;
+    order: 1;
+    width: 82px;
+    height: 82px;
+    overflow: hidden;
+    background: var(--va-surface-2);
+    border-radius: var(--va-radius-xs);
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    order: 2;
+    min-width: 0;
+    padding-top: 4px;
+  }
+
+  &__name {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.35;
+    color: var(--va-ink-2);
+  }
+
+  &__price {
+    font-size: 13.5px;
+    font-weight: 800;
+  }
+
+  &__tag {
+    position: absolute;
+    top: 7px;
+    right: 7px;
+    padding: 2px 6px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--va-brand);
+    background: var(--va-brand-soft);
+    border-radius: 4px;
+  }
+}
+
+// --- Вкладки ---
+.va_product-tabs {
+  margin-top: clamp(28px, 4vw, 44px);
+
+  &__list {
+    display: flex;
+    gap: 2px;
+    overflow-x: auto;
+    border-bottom: 1px solid var(--va-line);
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    [role='tab'] {
+      @include reset-button;
+      flex: 0 0 auto;
+      padding: 12px 16px;
+      margin-bottom: -1px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--va-ink-2);
+      border-bottom: 2px solid transparent;
+      transition:
+        color var(--va-dur) var(--va-ease),
+        border-color var(--va-dur) var(--va-ease);
+
+      &:hover {
+        color: var(--va-ink);
+      }
+
+      &[aria-selected='true'] {
+        color: var(--va-ink);
+        border-color: var(--va-brand);
+      }
+
+      @include focus-ring(-2px);
+    }
+  }
+
+  &__panel {
+    padding: 20px 0;
+    font-size: 14.5px;
+    line-height: 1.65;
+    color: var(--va-ink-2);
+
+    h3 {
+      margin-bottom: 8px;
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--va-ink);
+    }
+
+    p + p {
+      margin-top: 10px;
+    }
+
+    ul {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 10px;
+
+      li {
+        display: flex;
+        gap: 8px;
+
+        &::before {
+          content: '—';
+          color: var(--va-brand);
+        }
+      }
+    }
+  }
+}
+
+.va_specs {
+  width: 100%;
+
+  tr {
+    border-bottom: 1px dashed var(--va-line);
+  }
+
+  td {
+    padding: 11px 0;
+    font-size: 14px;
+
+    &:first-child {
+      width: 45%;
+      color: var(--va-ink-3);
+    }
+
+    &:last-child {
+      color: var(--va-ink);
+    }
+  }
+}
+
+// --- Отзывы ---
+.va_reviews-section,
+#questions,
+#details {
+  scroll-margin-top: 120px;
+}
+
+.va_reviews-layout {
+  display: grid;
+  gap: 16px;
+
+  @include media-up(900px) {
+    grid-template-columns: 300px minmax(0, 1fr);
+    gap: 24px;
+    align-items: start;
+  }
+}
+
+.va_reviews-summary {
+  padding: 18px;
+  background: var(--va-surface);
+  border: 1px solid var(--va-line);
+  border-radius: var(--va-radius-md);
+
+  @include media-up(900px) {
+    position: sticky;
+    top: 180px;
+  }
+
+  &__score {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--va-line);
+
+    > b {
+      font-size: 44px;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -0.04em;
+    }
+
+    p {
+      margin-top: 3px;
+      font-size: 12px;
+      color: var(--va-ink-3);
+    }
+  }
+
+  &__pros {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding-top: 14px;
+    margin-top: 14px;
+    font-size: 12px;
+    color: var(--va-ink-2);
+    border-top: 1px dashed var(--va-line);
+
+    strong {
+      color: var(--va-ink);
+    }
+  }
+}
+
+.va_stars {
+  font-size: 15px;
+  letter-spacing: 2px;
+  color: var(--va-amber);
+}
+
+.va_reviews-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin: 14px 0;
+
+  li {
+    display: grid;
+    grid-template-columns: 12px minmax(0, 1fr) 34px;
+    gap: 8px;
+    align-items: center;
+    font-size: 11px;
+    color: var(--va-ink-3);
+  }
+
+  &__track {
+    height: 6px;
+    overflow: hidden;
+    background: var(--va-surface-2);
+    border-radius: var(--va-radius-pill);
+
+    i {
+      display: block;
+      height: 100%;
+      background: var(--va-amber);
+      border-radius: inherit;
+    }
+  }
+}
+
+.va_reviews-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+.va_reviews-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 2px;
+}
+
+.va_chip-btn {
+  @include reset-button;
+  height: 32px;
+  padding: 0 14px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--va-ink-2);
+  background: var(--va-surface);
+  border: 1px solid var(--va-line);
+  border-radius: var(--va-radius-pill);
+  transition:
+    color var(--va-dur) var(--va-ease),
+    background-color var(--va-dur) var(--va-ease),
+    border-color var(--va-dur) var(--va-ease);
+
+  &:hover {
+    border-color: var(--va-line-strong);
+  }
+
+  &.is-active {
+    color: var(--va-brand);
+    background: var(--va-brand-ghost);
+    border-color: rgba(106, 59, 255, 0.4);
+  }
+
+  @include focus-ring(2px);
+}
+
+.va_review {
+  padding: 16px clamp(14px, 2vw, 18px);
+  background: var(--va-surface);
+  border: 1px solid var(--va-line);
+  border-radius: var(--va-radius-md);
+
+  &__head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  &__avatar {
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    width: 38px;
+    height: 38px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--va-brand);
+    background: var(--va-brand-ghost);
+    border-radius: 50%;
+  }
+
+  &__author {
+    min-width: 0;
+  }
+
+  &__name {
+    font-size: 13.5px;
+    font-weight: 700;
+  }
+
+  &__meta {
+    font-size: 11.5px;
+    color: var(--va-ink-3);
+  }
+
+  &__rating {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    margin-left: auto;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--va-ink);
+  }
+
+  &__text {
+    margin-top: 10px;
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: var(--va-ink-2);
+  }
+
+  &__points {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 10px 12px;
+    margin-top: 10px;
+    font-size: 12.5px;
+    line-height: 1.45;
+    color: var(--va-ink-2);
+    background: var(--va-surface-2);
+    border-radius: var(--va-radius-xs);
+
+    b {
+      color: var(--va-ink);
+    }
+  }
+
+  &__photos {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+
+    img {
+      width: 72px;
+      height: 72px;
+      object-fit: contain;
+      background: var(--va-surface-2);
+      border-radius: var(--va-radius-xs);
+    }
+  }
+
+  &__foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 12px;
+  }
+
+  &__helpful {
+    @include reset-button;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--va-ink-2);
+    transition: color var(--va-dur) var(--va-ease);
+
+    .va_icon {
+      width: 15px;
+      height: 15px;
+    }
+
+    &:hover {
+      color: var(--va-brand);
+    }
+
+    &.is-active {
+      color: var(--va-brand);
+    }
+
+    @include focus-ring(2px);
+  }
+}
+
+.va_reviews-more {
+  align-self: flex-start;
+  min-height: 40px;
+  padding: 8px 18px;
+  font-size: 13px;
+}
+
+// --- Вопросы ---
+.va_questions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.va_question {
+  padding: 14px clamp(14px, 2vw, 18px);
+  background: var(--va-surface);
+  border: 1px solid var(--va-line);
+  border-radius: var(--va-radius-md);
+
+  &__text {
+    font-size: 13.5px;
+    line-height: 1.45;
+    color: var(--va-ink);
+
+    b {
+      color: var(--va-ink-3);
+      font-weight: 600;
+    }
+  }
+
+  &__answer {
+    padding: 10px 12px;
+    margin-top: 8px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--va-ink-2);
+    background: var(--va-surface-2);
+    border-left: 3px solid var(--va-brand);
+    border-radius: 0 var(--va-radius-xs) var(--va-radius-xs) 0;
+
+    b {
+      color: var(--va-ink);
+    }
+  }
+
+  &__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 8px;
+    margin-top: 8px;
+    font-size: 11.5px;
+    color: var(--va-ink-3);
+
+    .va_link-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11.5px;
+      font-weight: 500;
+
+      .va_icon {
+        width: 13px;
+        height: 13px;
+      }
+    }
+  }
+}
+
+.va_question-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 10px;
+  padding: 16px;
+  margin-top: 14px;
+  background: var(--va-surface);
+  border: 1px solid var(--va-line);
+  border-radius: var(--va-radius-md);
+
+  .va_field {
+    flex: 1 1 320px;
+  }
+
+  .va_btn {
+    min-height: 44px;
+  }
+}
+
+// --- Лайтбокс и видео ---
+.va_lightbox {
+  position: fixed;
+  inset: 0;
+  width: min(1080px, calc(100vw - 32px));
+  max-width: none;
+  height: fit-content;
+  max-height: calc(100vh - 32px);
+  padding: 0;
+  margin: auto;
+  overflow: visible;
+  background: transparent;
+  border: 0;
+
+  &::backdrop {
+    background: rgba(9, 12, 24, 0.78);
+    backdrop-filter: blur(3px);
+  }
+
+  &[open] {
+    animation: va-dialog-in 0.2s var(--va-ease);
+  }
+
+  &__inner {
+    position: relative;
+    padding: clamp(14px, 2vw, 22px);
+    background: var(--va-surface);
+    border-radius: var(--va-radius-lg);
+  }
+
+  &__figure {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+
+    img {
+      width: 100%;
+      max-height: 74vh;
+      object-fit: contain;
+      background: var(--va-surface-2);
+      border-radius: var(--va-radius-md);
+    }
+
+    figcaption {
+      font-size: 12.5px;
+      color: var(--va-ink-2);
+    }
+  }
+
+  &__close {
+    @include reset-button;
+    position: absolute;
+    top: -14px;
+    right: -14px;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    color: var(--va-ink);
+    background: var(--va-surface);
+    border-radius: 50%;
+    box-shadow: var(--va-shadow);
+
+    .va_icon {
+      width: 20px;
+      height: 20px;
+    }
+
+    @include focus-ring(2px);
+  }
+
+  &__nav {
+    @include reset-button;
+    position: absolute;
+    top: 50%;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    color: var(--va-ink);
+    background: rgba(255, 255, 255, 0.92);
+    border-radius: 50%;
+    box-shadow: var(--va-shadow-sm);
+    transform: translateY(-50%);
+
+    .va_icon {
+      width: 20px;
+      height: 20px;
+    }
+
+    &:hover {
+      color: var(--va-brand);
+    }
+
+    &--prev {
+      left: 8px;
+    }
+
+    &--next {
+      right: 8px;
+    }
+  }
+
+  @include media-down(640px) {
+    &__close {
+      top: 8px;
+      right: 8px;
+    }
+
+    &__nav {
+      width: 36px;
+      height: 36px;
+    }
+  }
+}
+
+@keyframes va-dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.va_video-dialog {
+  width: min(920px, 96vw);
+
+  &__inner {
+    position: relative;
+    padding: 10px;
+    background: #0d1020;
+    border-radius: var(--va-radius-lg);
+  }
+
+  &__caption {
+    padding: 10px 6px 4px;
+    font-size: 12.5px;
+    color: rgba(255, 255, 255, 0.72);
+  }
+
+  .va_lightbox__close {
+    top: 8px;
+    right: 8px;
+  }
+}
+
+.va_video {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: radial-gradient(80% 100% at 50% 0%, #232a45, #0d1020 70%);
+  border-radius: var(--va-radius-md);
+
+  > img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.92;
+    transform-origin: center;
+  }
+
+  &__play {
+    @include reset-button;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: grid;
+    place-items: center;
+    width: 72px;
+    height: 72px;
+    color: var(--va-brand);
+    background: rgba(255, 255, 255, 0.94);
+    border-radius: 50%;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+    transform: translate(-50%, -50%);
+    transition:
+      transform var(--va-dur) var(--va-ease),
+      opacity var(--va-dur) var(--va-ease);
+
+    .va_icon {
+      width: 30px;
+      height: 30px;
+      margin-left: 3px;
+    }
+
+    &:hover {
+      transform: translate(-50%, -50%) scale(1.06);
+    }
+
+    &:focus-visible {
+      outline-color: #fff;
+    }
+  }
+
+  &__controls {
+    position: absolute;
+    right: 14px;
+    bottom: 12px;
+    left: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.82);
+    background: rgba(8, 10, 20, 0.55);
+    border-radius: var(--va-radius-pill);
+    backdrop-filter: blur(4px);
+  }
+
+  &__bar {
+    flex: 1 1 auto;
+    height: 4px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.22);
+    border-radius: var(--va-radius-pill);
+
+    span {
+      display: block;
+      width: 0;
+      height: 100%;
+      background: var(--va-brand);
+      border-radius: inherit;
+    }
+  }
+
+  &.is-playing {
+    .va_video__play {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    > img {
+      animation: va-video-pan 12s ease-in-out forwards;
+    }
+
+    .va_video__bar span {
+      animation: va-video-progress 12s linear forwards;
+    }
+  }
+}
+
+@keyframes va-video-progress {
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes va-video-pan {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.08);
+  }
+}

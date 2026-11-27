@@ -1,0 +1,373 @@
+// ============================================================
+//  Профиль: сайдбар, баннер, финансы, рекомендации
+// ============================================================
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+
+.va_profile {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 20px;
+  margin-top: 16px;
+
+  @include media-up($va-bp-lg) {
+    grid-template-columns: 286px minmax(0, 1fr);
+    gap: 28px;
+    align-items: start;
+  }
+
+  &__aside {
+    min-width: 0;
+  }
+
+  &__main {
+    min-width: 0;
+  }
+}
+
+.va_profile-card {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 20px;
+  background: var(--va-surface);
+  border: 1px solid var(--va-line);
+  border-radius: var(--va-radius-md);
+
+  &__avatar {
+    display: grid;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    margin-bottom: 4px;
+    font-size: 21px;
+    font-weight: 800;
+    letter-spacing: 0.01em;
+    color: var(--va-brand);
+    background: linear-gradient(145deg, #f1ecff, #e6eeff);
+    border: 1px solid rgba(106, 59, 255, 0.16);
+    border-radius: 50%;
+  }
+
+  &__name {
+    font-size: 17px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+  }
+
+  &__edit {
+    align-self: flex-start;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--va-brand);
+    border-bottom: 1px solid transparent;
+    transition: border-color var(--va-dur) var(--va-ease);
+
+    &:hover {
+      border-color: currentColor;
+    }
+  }
+}
+
+.va_profile-menu {
+  margin-top: 12px;
+
+  &__summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 13px 16px;
+    font-size: 13.5px;
+    font-weight: 700;
+    list-style: none;
+    cursor: pointer;
+    background: var(--va-surface);
+    border: 1px solid var(--va-line);
+    border-radius: var(--va-radius-sm);
+
+    &::-webkit-details-marker {
+      display: none;
+    }
+
+    .va_icon {
+      width: 16px;
+      height: 16px;
+      transition: transform var(--va-dur) var(--va-ease);
+    }
+
+    @include media-up($va-bp-lg) {
+      display: none;
+    }
+  }
+
+  &[open] &__summary .va_icon {
+    transform: rotate(180deg);
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px 18px;
+    margin-top: 10px;
+    background: var(--va-surface);
+    border: 1px solid var(--va-line);
+    border-radius: var(--va-radius-md);
+
+    @include media-up($va-bp-lg) {
+      padding: 18px;
+      margin-top: 12px;
+    }
+  }
+}
+
+.va_profile-group {
+  &__title {
+    margin-bottom: 6px;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--va-ink-3);
+  }
+
+  ul {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+
+  a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    margin-left: -8px;
+    font-size: 13px;
+    line-height: 1.35;
+    color: var(--va-ink-2);
+    border-radius: var(--va-radius-xs);
+    transition:
+      color var(--va-dur) var(--va-ease),
+      background-color var(--va-dur) var(--va-ease);
+
+    &:hover {
+      color: var(--va-brand);
+      background: var(--va-brand-ghost);
+    }
+
+    &.is-active {
+      font-weight: 600;
+      color: var(--va-brand);
+      background: var(--va-brand-ghost);
+    }
+  }
+
+  &__badge {
+    margin-left: auto;
+    padding: 1px 7px;
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--va-ink-3);
+    background: var(--va-surface-2);
+    border-radius: var(--va-radius-pill);
+  }
+
+  &__badge--accent {
+    color: #fff;
+    background: var(--va-brand);
+  }
+}
+
+// --- Баннер ---
+.va_profile-banner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 190px;
+  padding: clamp(22px, 3.4vw, 34px);
+  overflow: hidden;
+  color: #fff;
+  background:
+    radial-gradient(80% 130% at 92% 0%, rgba(255, 144, 210, 0.36), transparent 58%),
+    linear-gradient(116deg, #241a72 0%, #3d17b8 44%, #2f7bff 100%);
+  border-radius: var(--va-radius-lg);
+  isolation: isolate;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    border-radius: 50%;
+  }
+
+  &::before {
+    top: -80px;
+    right: 12%;
+    width: 220px;
+    height: 220px;
+    border: 30px solid rgba(255, 255, 255, 0.07);
+  }
+
+  &::after {
+    right: -40px;
+    bottom: -110px;
+    width: 260px;
+    height: 260px;
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  &__content {
+    position: relative;
+    z-index: 1;
+    max-width: 520px;
+  }
+
+  &__eyebrow {
+    display: inline-block;
+    margin-bottom: 10px;
+    padding: 4px 10px;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--va-radius-pill);
+  }
+
+  h1 {
+    font-size: clamp(23px, 2.8vw, 34px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+  }
+
+  p {
+    max-width: 430px;
+    margin-top: 9px;
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.84);
+  }
+
+  .va_btn {
+    margin-top: 16px;
+  }
+
+  &__art {
+    position: absolute;
+    top: 50%;
+    right: clamp(18px, 5vw, 80px);
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: clamp(96px, 13vw, 150px);
+    height: clamp(96px, 13vw, 150px);
+    color: #fff;
+    background: rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.24);
+    border-radius: 28px;
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.18);
+    transform: rotate(-7deg);
+
+    .va_icon {
+      width: 56%;
+      height: 56%;
+      stroke-width: 1.2;
+    }
+
+    @include media-down(640px) {
+      display: none;
+    }
+  }
+}
+
+// --- Финансы ---
+.va_profile-section {
+  margin-top: clamp(26px, 3.6vw, 38px);
+  scroll-margin-top: 120px;
+}
+
+.va_finance-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: clamp(18px, 2.6vw, 26px);
+  overflow: hidden;
+  background: var(--va-surface);
+  border: 1px solid var(--va-line);
+  border-radius: var(--va-radius-md);
+
+  &__body {
+    max-width: 460px;
+
+    h3 {
+      margin-bottom: 4px;
+      font-size: 17px;
+      font-weight: 800;
+    }
+
+    p {
+      margin-bottom: 14px;
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--va-ink-2);
+    }
+
+    .va_btn {
+      min-height: 40px;
+      padding: 8px 18px;
+      font-size: 13px;
+    }
+  }
+
+  &__art {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex: 0 0 auto;
+    width: clamp(120px, 16vw, 170px);
+    aspect-ratio: 1.55 / 1;
+    padding: 14px;
+    color: #fff;
+    background:
+      radial-gradient(130% 120% at 100% 0%, rgba(255, 255, 255, 0.35), transparent 55%),
+      linear-gradient(135deg, #2f7bff, #6a3bff);
+    border-radius: 16px;
+    box-shadow: 0 16px 34px rgba(58, 48, 190, 0.24);
+    transform: rotate(-4deg);
+
+    .va_icon {
+      width: 30px;
+      height: 30px;
+      stroke-width: 1.5;
+    }
+
+    span {
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+    }
+
+    @include media-down(480px) {
+      display: none;
+    }
+  }
+}
+
+.va_profile-note {
+  margin-top: 12px;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--va-ink-3);
+
+  a {
+    color: var(--va-brand);
+  }
+}

@@ -1,0 +1,60 @@
+// ============================================================
+//  Дизайн-токены «Версты»
+// ============================================================
+
+// Брейкпоинты (mobile-first)
+$va-bp-sm: 480px;
+$va-bp-md: 768px;
+$va-bp-lg: 1024px;
+$va-bp-xl: 1280px;
+$va-bp-2xl: 1440px;
+
+// Контейнер
+$va-container: 1360px;
+
+:root {
+  // Бренд
+  --va-brand: #6a3bff;
+  --va-brand-2: #2f7bff;
+  --va-brand-dark: #4a20d6;
+  --va-brand-soft: #eee8ff;
+  --va-brand-ghost: rgba(106, 59, 255, 0.08);
+
+  // Текст и поверхности
+  --va-ink: #0e1630;
+  --va-ink-2: #5a6178;
+  --va-ink-3: #6f7588;
+  --va-bg: #f5f6fb;
+  --va-surface: #ffffff;
+  --va-surface-2: #f6f7fb;
+  --va-line: #e6e8f0;
+  --va-line-strong: #d5d9e6;
+
+  // Акценты
+  --va-sale: #ff3d57;
+  --va-sale-soft: #ffecef;
+  --va-mint: #007a56;
+  --va-mint-soft: #e2f7f0;
+  --va-amber: #ffb020;
+  --va-accent: #00c2a8;
+
+  // Геометрия
+  --va-radius-xs: 8px;
+  --va-radius-sm: 12px;
+  --va-radius-md: 16px;
+  --va-radius-lg: 24px;
+  --va-radius-pill: 999px;
+
+  // Тени
+  --va-shadow-sm: 0 2px 8px rgba(20, 26, 46, 0.05);
+  --va-shadow: 0 10px 30px rgba(20, 26, 46, 0.08);
+  --va-shadow-lg: 0 24px 60px rgba(20, 26, 46, 0.16);
+
+  // Движение
+  --va-ease: cubic-bezier(0.2, 0.7, 0.3, 1);
+  --va-dur: 0.22s;
+
+  // Сетка
+  --va-container: #{$va-container};
+  --va-gutter: clamp(16px, 3.2vw, 40px);
+}

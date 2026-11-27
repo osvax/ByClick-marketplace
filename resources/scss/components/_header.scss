@@ -1,0 +1,468 @@
+// ============================================================
+//  Шапка: топбар, основная строка, каталог
+// ============================================================
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+
+.va_header {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  background: var(--va-surface);
+  transition: box-shadow var(--va-dur) var(--va-ease);
+
+  &.is-scrolled {
+    box-shadow: 0 8px 28px rgba(20, 26, 46, 0.1);
+  }
+}
+
+// --- Верхняя служебная строка ---
+.va_topbar {
+  background: var(--va-surface-2);
+  border-bottom: 1px solid var(--va-line);
+
+  @include media-down($va-bp-md) {
+    display: none;
+  }
+
+  &__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    min-height: 34px;
+  }
+
+  &__city {
+    @include reset-button;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: var(--va-ink-2);
+    border-radius: 6px;
+    transition: color var(--va-dur) var(--va-ease);
+
+    .va_icon {
+      width: 14px;
+      height: 14px;
+    }
+
+    &:hover {
+      color: var(--va-brand);
+    }
+
+    @include focus-ring(2px);
+  }
+
+  &__nav {
+    display: flex;
+    align-items: center;
+    gap: clamp(14px, 2.4vw, 28px);
+  }
+
+  &__link {
+    font-size: 12px;
+    color: var(--va-ink-2);
+    transition: color var(--va-dur) var(--va-ease);
+
+    &:hover {
+      color: var(--va-brand);
+    }
+  }
+}
+
+// --- Основная строка ---
+.va_header__main {
+  background: var(--va-surface);
+}
+
+.va_header__inner {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-areas:
+    'burger logo actions'
+    'search search search';
+  gap: 12px;
+  align-items: center;
+  padding-block: 12px;
+
+  @include media-up($va-bp-lg) {
+    grid-template-columns: auto auto minmax(240px, 1fr) auto;
+    grid-template-areas: 'logo catalog search actions';
+    gap: clamp(16px, 2vw, 28px);
+    padding-block: 16px;
+  }
+}
+
+// --- Бургер ---
+.va_burger {
+  @include reset-button;
+  grid-area: burger;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--va-radius-xs);
+  transition: background-color var(--va-dur) var(--va-ease);
+
+  &:hover {
+    background: var(--va-surface-2);
+  }
+
+  @include focus-ring;
+
+  @include media-up($va-bp-lg) {
+    display: none;
+  }
+}
+
+// --- Логотип ---
+.va_logo {
+  grid-area: logo;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  justify-self: start;
+  border-radius: var(--va-radius-xs);
+
+  @include focus-ring;
+
+  &__mark {
+    display: block;
+    flex: 0 0 auto;
+    width: 30px;
+    height: 30px;
+
+    @include media-up($va-bp-sm) {
+      width: 34px;
+      height: 34px;
+    }
+
+    @include media-up($va-bp-lg) {
+      width: 38px;
+      height: 38px;
+    }
+  }
+
+  &__text {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+  }
+
+  &__name {
+    font-size: clamp(18px, 2.2vw, 23px);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--va-ink);
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  &__by {
+    font-weight: 600;
+  }
+
+  &__tagline {
+    font-size: 9px;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--va-ink-3);
+    white-space: nowrap;
+  }
+
+  // На самых узких экранах оставляем только знак
+  @include media-down(380px) {
+    &__text {
+      @include visually-hidden;
+    }
+  }
+
+  &--footer {
+    .va_logo__name {
+      color: var(--va-ink);
+    }
+  }
+}
+
+// --- Каталог ---
+.va_catalog-wrap {
+  position: relative;
+  grid-area: catalog;
+  display: none;
+
+  @include media-up($va-bp-lg) {
+    display: block;
+  }
+}
+
+.va_catalog-panel {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  z-index: 70;
+  width: min(880px, calc(100vw - 260px));
+  overflow: hidden;
+  background: var(--va-surface);
+  border: 1px solid var(--va-line);
+  border-radius: var(--va-radius-md);
+  box-shadow: var(--va-shadow-lg);
+  animation: va-fade-down 0.18s var(--va-ease);
+
+  &__layout {
+    display: grid;
+    grid-template-columns: 250px minmax(0, 1fr);
+    min-height: 392px;
+  }
+
+  &__main {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px;
+    background: var(--va-surface-2);
+    border-right: 1px solid var(--va-line);
+  }
+
+  &__cat {
+    @include reset-button;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 11px 12px;
+    font-size: 13.5px;
+    font-weight: 500;
+    line-height: 1.25;
+    text-align: left;
+    color: var(--va-ink-2);
+    border-radius: var(--va-radius-xs);
+    transition:
+      background-color var(--va-dur) var(--va-ease),
+      color var(--va-dur) var(--va-ease),
+      box-shadow var(--va-dur) var(--va-ease);
+
+    .va_icon {
+      width: 20px;
+      height: 20px;
+      color: var(--va-ink-3);
+      transition: color var(--va-dur) var(--va-ease);
+    }
+
+    &:hover {
+      color: var(--va-ink);
+      background: var(--va-surface);
+    }
+
+    &.is-active {
+      font-weight: 600;
+      color: var(--va-brand);
+      background: var(--va-surface);
+      box-shadow: var(--va-shadow-sm);
+
+      .va_icon {
+        color: var(--va-brand);
+      }
+    }
+
+    @include focus-ring(-2px);
+  }
+
+  &__chevron {
+    width: 14px !important;
+    height: 14px !important;
+    margin-left: auto;
+    opacity: 0.55;
+  }
+
+  &__sub {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding: 20px 24px;
+  }
+
+  &__subhead {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+
+    h3 {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+    }
+  }
+
+  &__all {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    flex: 0 0 auto;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--va-brand);
+
+    .va_icon {
+      width: 14px;
+      height: 14px;
+    }
+
+    &:hover {
+      color: var(--va-brand-dark);
+    }
+  }
+
+  &__sublist {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2px 16px;
+    align-content: start;
+  }
+
+  &__subitem {
+    padding: 8px 10px;
+    margin-left: -10px;
+    font-size: 13.5px;
+    line-height: 1.35;
+    color: var(--va-ink-2);
+    border-radius: var(--va-radius-xs);
+    transition:
+      background-color var(--va-dur) var(--va-ease),
+      color var(--va-dur) var(--va-ease);
+
+    &:hover {
+      color: var(--va-brand);
+      background: var(--va-brand-ghost);
+    }
+  }
+
+  &__note {
+    padding-top: 16px;
+    margin-top: auto;
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--va-ink-3);
+    border-top: 1px dashed var(--va-line);
+  }
+
+  @media (max-width: 1150px) {
+    &__layout {
+      grid-template-columns: 220px minmax(0, 1fr);
+    }
+  }
+}
+
+@keyframes va-fade-down {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// --- Действия пользователя ---
+.va_actions {
+  grid-area: actions;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  justify-self: end;
+
+  @include media-up($va-bp-md) {
+    gap: 6px;
+  }
+}
+
+.va_action {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  min-width: 48px;
+  padding: 6px 6px;
+  font-size: 11px;
+  line-height: 1.1;
+  color: var(--va-ink-2);
+  border-radius: var(--va-radius-xs);
+  transition:
+    color var(--va-dur) var(--va-ease),
+    background-color var(--va-dur) var(--va-ease);
+
+  .va_icon {
+    width: 22px;
+    height: 22px;
+  }
+
+  &:hover {
+    color: var(--va-brand);
+    background: var(--va-brand-ghost);
+  }
+
+  @include focus-ring;
+
+  &--orders {
+    @include media-down($va-bp-md) {
+      display: none;
+    }
+  }
+
+  @include media-down($va-bp-md) {
+    .va_action__label {
+      @include visually-hidden;
+    }
+  }
+
+  @include media-up($va-bp-md) {
+    min-width: 60px;
+    padding: 6px 8px;
+    font-size: 12px;
+  }
+}
+
+.va_action__count {
+  position: absolute;
+  top: 0;
+  right: 2px;
+  display: grid;
+  place-items: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+  background: var(--va-brand);
+  border: 2px solid var(--va-surface);
+  border-radius: var(--va-radius-pill);
+
+  @include media-up($va-bp-md) {
+    top: 1px;
+    right: 6px;
+  }
+
+  &.is-pulse {
+    animation: va-pulse 0.4s var(--va-ease);
+  }
+}
+
+@keyframes va-pulse {
+  0% {
+    transform: scale(1);
+  }
+  45% {
+    transform: scale(1.35);
+  }
+  100% {
+    transform: scale(1);
+  }
+}

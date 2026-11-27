@@ -1,0 +1,157 @@
+// ============================================================
+//  Поиск с подсказками
+// ============================================================
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+
+.va_search {
+  grid-area: search;
+  position: relative;
+  min-width: 0;
+
+  &__field {
+    display: flex;
+    align-items: center;
+    height: 48px;
+    padding-left: 14px;
+    background: var(--va-surface-2);
+    border: 1px solid var(--va-line);
+    border-radius: var(--va-radius-sm);
+    transition:
+      background-color var(--va-dur) var(--va-ease),
+      border-color var(--va-dur) var(--va-ease),
+      box-shadow var(--va-dur) var(--va-ease);
+
+    &:focus-within {
+      background: var(--va-surface);
+      border-color: var(--va-brand);
+      box-shadow: 0 0 0 3px var(--va-brand-ghost);
+    }
+  }
+
+  &__icon {
+    width: 20px;
+    height: 20px;
+    color: var(--va-ink-3);
+  }
+
+  &__input {
+    flex: 1 1 auto;
+    min-width: 0;
+    height: 100%;
+    padding: 0 10px;
+    font-size: 14px;
+    background: transparent;
+    border: 0;
+    outline: none;
+
+    &::placeholder {
+      color: var(--va-ink-3);
+    }
+
+    &::-webkit-search-cancel-button {
+      display: none;
+    }
+  }
+
+  &__submit {
+    @include reset-button;
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    width: 40px;
+    height: 40px;
+    margin: 4px;
+    color: #fff;
+    background: var(--va-brand);
+    border-radius: 10px;
+    transition: background-color var(--va-dur) var(--va-ease);
+
+    .va_icon {
+      width: 20px;
+      height: 20px;
+    }
+
+    &:hover {
+      background: var(--va-brand-dark);
+    }
+
+    @include focus-ring;
+  }
+
+  &__suggest {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    left: 0;
+    z-index: 70;
+    max-height: 380px;
+    padding: 8px;
+    overflow-y: auto;
+    background: var(--va-surface);
+    border: 1px solid var(--va-line);
+    border-radius: var(--va-radius-md);
+    box-shadow: var(--va-shadow-lg);
+    animation: va-fade-down 0.16s var(--va-ease);
+  }
+}
+
+.va_suggest {
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 10px;
+    border-radius: var(--va-radius-xs);
+    transition: background-color var(--va-dur) var(--va-ease);
+
+    &:hover,
+    &:focus-visible {
+      background: var(--va-surface-2);
+    }
+
+    @include focus-ring;
+  }
+
+  &__img {
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+    background: var(--va-surface-2);
+    border-radius: var(--va-radius-xs);
+    flex: 0 0 auto;
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  &__name {
+    font-size: 14px;
+    color: var(--va-ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__meta {
+    font-size: 12px;
+    color: var(--va-ink-3);
+  }
+
+  &__price {
+    margin-left: auto;
+    font-size: 14px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  &__empty {
+    padding: 16px 12px;
+    font-size: 14px;
+    color: var(--va-ink-2);
+  }
+}

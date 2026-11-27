@@ -1,0 +1,162 @@
+// ============================================================
+//  Кнопки и бейджи
+// ============================================================
+@use '../abstracts/mixins' as *;
+
+.va_btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 10px 24px;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+  border-radius: var(--va-radius-sm);
+  transition:
+    background-color var(--va-dur) var(--va-ease),
+    color var(--va-dur) var(--va-ease),
+    transform var(--va-dur) var(--va-ease),
+    box-shadow var(--va-dur) var(--va-ease);
+
+  .va_icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  @include focus-ring;
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.va_btn--primary {
+  color: #fff;
+  background: var(--va-brand);
+
+  &:hover {
+    background: var(--va-brand-dark);
+  }
+}
+
+.va_btn--light {
+  color: var(--va-ink);
+  background: #fff;
+  box-shadow: 0 6px 18px rgba(20, 26, 46, 0.12);
+
+  &:hover {
+    background: #f4f1ff;
+  }
+}
+
+.va_btn--dark {
+  color: #fff;
+  background: var(--va-ink);
+
+  &:hover {
+    background: #000;
+  }
+}
+
+.va_btn--catalog {
+  min-height: 44px;
+  padding: 10px 18px;
+  font-size: 15px;
+  color: var(--va-brand);
+  background: var(--va-brand-soft);
+  border-radius: var(--va-radius-sm);
+
+  &:hover {
+    background: #e4dcff;
+  }
+
+  &[aria-expanded='true'] {
+    color: #fff;
+    background: var(--va-brand);
+  }
+
+  @include media-down(1024px) {
+    display: none;
+  }
+}
+
+.va_btn--cart {
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 12px;
+  font-size: 14px;
+  color: var(--va-brand);
+  background: var(--va-brand-soft);
+
+  .va_icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  &:hover {
+    color: #fff;
+    background: var(--va-brand);
+  }
+}
+
+.va_btn--block {
+  width: 100%;
+}
+
+// --- Бейджи ---
+.va_badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+  color: #fff;
+  border-radius: var(--va-radius-xs);
+  backdrop-filter: blur(4px);
+}
+
+.va_badge--sale {
+  background: var(--va-sale);
+}
+
+.va_badge--hit {
+  background: var(--va-amber);
+  color: var(--va-ink);
+}
+
+.va_badge--new {
+  background: var(--va-brand);
+}
+
+// --- Звёзды рейтинга ---
+.va_rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--va-ink-2);
+
+  &__star {
+    width: 14px;
+    height: 14px;
+    color: var(--va-amber);
+    fill: currentColor;
+    stroke: none;
+  }
+
+  &__value {
+    font-weight: 700;
+    color: var(--va-ink);
+  }
+
+  &__count {
+    margin-left: 2px;
+    color: var(--va-ink-3);
+    white-space: nowrap;
+  }
+}

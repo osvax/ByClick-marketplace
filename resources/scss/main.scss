@@ -1,0 +1,34 @@
+// ============================================================
+//  Верста — точка входа стилей
+//  Архитектура: abstracts → base → components
+//  Методология: BEM, префикс va_
+// ============================================================
+
+// Абстракции (токены + миксины)
+@use 'abstracts/variables';
+@use 'abstracts/mixins';
+
+// База
+@use 'base/fonts';
+@use 'base/reset';
+@use 'base/base';
+@use 'base/helpers';
+
+// Компоненты
+@use 'components/button';
+@use 'components/header';
+@use 'components/nav';
+@use 'components/search';
+@use 'components/hero';
+@use 'components/product-card';
+@use 'components/sections';
+@use 'components/breadcrumbs';
+@use 'components/catalog';
+@use 'components/product';
+@use 'components/cart-page';
+@use 'components/content';
+@use 'components/profile';
+@use 'components/drawer';
+@use 'components/menu';
+@use 'components/footer';
+@use 'components/toast';

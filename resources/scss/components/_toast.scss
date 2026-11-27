@@ -1,0 +1,41 @@
+// ============================================================
+//  Всплывающее уведомление
+// ============================================================
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+
+.va_toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  z-index: 200;
+  width: max-content;
+  max-width: min(480px, calc(100% - 32px));
+  padding: 12px 22px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.35;
+  text-align: center;
+  color: #fff;
+  background: var(--va-ink);
+  border-radius: var(--va-radius-pill);
+  box-shadow: var(--va-shadow-lg);
+  opacity: 0;
+  transform: translate(-50%, 16px);
+  transition:
+    opacity 0.24s var(--va-ease),
+    transform 0.24s var(--va-ease);
+  pointer-events: none;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+
+  &.is-visible {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+
+  @media (max-width: 479.98px) {
+    bottom: 16px;
+    border-radius: var(--va-radius-md);
+  }
+}

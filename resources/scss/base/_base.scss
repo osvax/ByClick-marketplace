@@ -1,0 +1,70 @@
+// ============================================================
+//  Базовая типографика и фон страницы
+// ============================================================
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  font-family:
+    'Inter Variable',
+    'Inter',
+    'SF Pro Text',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    'Helvetica Neue',
+    Arial,
+    sans-serif;
+  font-size: 16px;
+  color: var(--va-ink);
+  background: var(--va-bg);
+}
+
+body {
+  color: var(--va-ink);
+  background: var(--va-bg);
+  overflow-x: clip;
+}
+
+body.is-locked {
+  overflow: hidden;
+}
+
+::selection {
+  color: #fff;
+  background: var(--va-brand);
+}
+
+:focus-visible {
+  outline: 2px solid var(--va-brand);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.va_page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.va_main {
+  flex: 1 0 auto;
+  padding-bottom: clamp(32px, 6vw, 72px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

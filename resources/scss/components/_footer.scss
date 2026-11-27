@@ -1,0 +1,173 @@
+// ============================================================
+//  Подвал
+// ============================================================
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+
+.va_footer {
+  padding-top: clamp(32px, 4vw, 52px);
+  background: var(--va-surface);
+  border-top: 1px solid var(--va-line);
+
+  &__top {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 26px 24px;
+    padding-bottom: clamp(24px, 3vw, 36px);
+    border-bottom: 1px solid var(--va-line);
+
+    @include media-up($va-bp-sm) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    @include media-up($va-bp-lg) {
+      grid-template-columns: 1.5fr repeat(3, minmax(0, 1fr)) 1.1fr;
+      gap: 24px;
+    }
+  }
+
+  &__brand {
+    @include media-up($va-bp-sm) {
+      grid-column: 1 / -1;
+    }
+
+    @include media-up($va-bp-lg) {
+      grid-column: auto;
+    }
+  }
+
+  &__tagline {
+    max-width: 300px;
+    margin: 14px 0 16px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--va-ink-2);
+  }
+
+  &__social {
+    display: flex;
+    gap: 8px;
+  }
+
+  &__title {
+    margin-bottom: 12px;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    a {
+      font-size: 13px;
+      line-height: 1.4;
+      color: var(--va-ink-2);
+      transition: color var(--va-dur) var(--va-ease);
+
+      &:hover {
+        color: var(--va-brand);
+      }
+    }
+  }
+
+  &__phone {
+    display: inline-block;
+    margin-bottom: 4px;
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    transition: color var(--va-dur) var(--va-ease);
+
+    &:hover {
+      color: var(--va-brand);
+    }
+  }
+
+  &__note {
+    margin-bottom: 10px;
+    font-size: 12px;
+    color: var(--va-ink-3);
+  }
+
+  &__mail {
+    font-size: 13px;
+    color: var(--va-brand);
+    border-bottom: 1px solid transparent;
+    transition: border-color var(--va-dur) var(--va-ease);
+
+    &:hover {
+      border-color: currentColor;
+    }
+  }
+
+  &__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 24px;
+    padding-block: 18px 28px;
+    font-size: 12px;
+    color: var(--va-ink-3);
+  }
+
+  &__copy {
+    flex: 1 1 300px;
+    line-height: 1.5;
+  }
+
+  &__pay {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  &__legal {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 16px;
+
+    a {
+      color: var(--va-ink-2);
+      transition: color var(--va-dur) var(--va-ease);
+
+      &:hover {
+        color: var(--va-brand);
+      }
+    }
+  }
+}
+
+.va_social {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--va-ink-2);
+  background: var(--va-surface-2);
+  border-radius: 50%;
+  transition:
+    color var(--va-dur) var(--va-ease),
+    background-color var(--va-dur) var(--va-ease);
+
+  &:hover {
+    color: var(--va-brand);
+    background: var(--va-brand-soft);
+  }
+}
+
+.va_pay {
+  padding: 3px 8px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--va-ink-2);
+  background: var(--va-surface);
+  border: 1px solid var(--va-line);
+  border-radius: 6px;
+}
