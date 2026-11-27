@@ -12,7 +12,7 @@ return [
     |
     */
 
-    'currency' => env('MARKETPLACE_CURRENCY', 'BYN'),
+    'currency' => env('MARKETPLACE_CURRENCY', 'Руб'),
 
     'currency_scale' => 100,
 
