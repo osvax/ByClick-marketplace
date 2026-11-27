@@ -23,6 +23,7 @@
 /auth.json
 /storage/*.key
 /storage/pail
+/storage/backups
 /storage/*.sqlite
 /bootstrap/cache/*.php
 /bootstrap/cache/*.php.tmp

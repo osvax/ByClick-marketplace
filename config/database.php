@@ -19,6 +19,9 @@ return [
 
     'default' => env('DB_CONNECTION', 'mariadb'),
 
+    // Optional absolute path to mysqldump when it is not in PATH.
+    'dump_binary' => env('DB_DUMP_BINARY', 'mysqldump'),
+
     /*
     |--------------------------------------------------------------------------
     | Database Connections

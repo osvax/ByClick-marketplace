@@ -2,7 +2,41 @@
     'title' => 'ByClick — маркетплейс нужных вещей',
     'description' => 'ByClick — маркетплейс: электроника, одежда, товары для дома, красоты и спорта. Доставка от 1 дня, возврат 30 дней, бонусы за покупки.',
     'canonical' => null,
+    'ogType' => 'website',
+    'ogImage' => null,
+    'jsonLd' => null,
 ])
+
+@php
+    $defaultJsonLd = [
+        '@context' => 'https://schema.org',
+        '@graph' => [
+            [
+                '@type' => 'Organization',
+                'name' => 'ByClick',
+                'url' => url('/'),
+                'logo' => asset('brand/byclick-mark.svg'),
+            ],
+            [
+                '@type' => 'WebSite',
+                'name' => 'ByClick',
+                'url' => url('/'),
+                'inLanguage' => 'ru-RU',
+                'potentialAction' => [
+                    '@type' => 'SearchAction',
+                    'target' => route('catalog').'?q={search_term_string}',
+                    'query-input' => 'required name=search_term_string',
+                ],
+            ],
+        ],
+    ];
+
+    $schema = $jsonLd ?? $defaultJsonLd;
+    $schemaJson = json_encode(
+        $schema,
+        JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT,
+    );
+@endphp
 
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
@@ -15,6 +49,24 @@
         <meta name="description" content="{{ $description }}" />
         @if ($canonical)
             <link rel="canonical" href="{{ $canonical }}" />
+        @endif
+
+        <meta property="og:site_name" content="ByClick" />
+        <meta property="og:locale" content="ru_RU" />
+        <meta property="og:type" content="{{ $ogType }}" />
+        <meta property="og:title" content="{{ $title }}" />
+        <meta property="og:description" content="{{ $description }}" />
+        @if ($canonical)
+            <meta property="og:url" content="{{ $canonical }}" />
+        @endif
+        <meta property="og:image" content="{{ $ogImage ?? asset('brand/byclick-mark.svg') }}" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="{{ $title }}" />
+        <meta name="twitter:description" content="{{ $description }}" />
+        <meta name="twitter:image" content="{{ $ogImage ?? asset('brand/byclick-mark.svg') }}" />
+
+        @if ($schemaJson)
+            <script type="application/ld+json">{!! $schemaJson !!}</script>
         @endif
 
         <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml" />

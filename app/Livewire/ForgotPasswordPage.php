@@ -4,6 +4,8 @@ namespace App\Livewire;
 
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Validation\ValidationException;
 use Livewire\Component;
 
 class ForgotPasswordPage extends Component
@@ -28,6 +30,16 @@ class ForgotPasswordPage extends Component
         ], attributes: [
             'email' => 'e-mail',
         ]);
+
+        $rateKey = 'password-email:'.request()->ip();
+
+        if (RateLimiter::tooManyAttempts($rateKey, 5)) {
+            throw ValidationException::withMessages([
+                'email' => 'Слишком много запросов. Попробуйте позже.',
+            ]);
+        }
+
+        RateLimiter::hit($rateKey, 600);
 
         Password::sendResetLink(['email' => $this->email]);
 

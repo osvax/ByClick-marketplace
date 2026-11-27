@@ -66,6 +66,16 @@
         "types:check": [
             "phpstan analyse"
         ],
+        "deploy": [
+            "@php artisan migrate --force",
+            "@php artisan config:cache",
+            "@php artisan route:cache",
+            "@php artisan view:cache",
+            "@php artisan event:cache"
+        ],
+        "backup": [
+            "@php artisan db:backup"
+        ],
         "test": [
             "@php artisan config:clear --ansi",
             "@lint:check",

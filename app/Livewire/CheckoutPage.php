@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Enums\DeliveryMethod;
 use App\Enums\OrderStatus;
 use App\Enums\PaymentMethod;
+use App\Events\OrderPlaced;
 use App\Models\Cart;
 use App\Models\DeliveryPoint;
 use App\Models\Order;
@@ -12,6 +13,7 @@ use App\Models\Product;
 use App\Services\DeliveryCalculator;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Livewire\Component;
@@ -132,6 +134,16 @@ class CheckoutPage extends Component
             'agree' => 'согласие с условиями',
         ]);
 
+        $rateKey = 'checkout:'.(auth()->id() ?? session()->getId()).'|'.request()->ip();
+
+        if (RateLimiter::tooManyAttempts($rateKey, 10)) {
+            throw ValidationException::withMessages([
+                'cart' => 'Слишком много попыток оформления. Подождите несколько минут.',
+            ]);
+        }
+
+        RateLimiter::hit($rateKey, 600);
+
         $cart = Cart::current()->load(['items.product', 'promoCode']);
 
         if ($cart->items->isEmpty()) {
@@ -215,6 +227,8 @@ class CheckoutPage extends Component
 
         // Guests may only open the success page of an order they just placed.
         session()->put('placed_order_'.$order->id, true);
+
+        OrderPlaced::dispatch($order);
 
         $this->redirect(route('checkout.success', $order), navigate: true);
     }

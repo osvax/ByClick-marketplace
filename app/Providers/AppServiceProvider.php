@@ -2,14 +2,19 @@
 
 namespace App\Providers;
 
+use App\Events\OrderPlaced;
+use App\Listeners\NotifySellersOfOrder;
+use App\Listeners\SendOrderConfirmation;
 use App\Models\Cart;
 use App\Models\Category;
 use App\Models\Favorite;
 use App\Models\User;
 use Carbon\CarbonImmutable;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -33,9 +38,18 @@ class AppServiceProvider extends ServiceProvider
         $this->configureDefaults();
         $this->registerViewComposers();
 
+        // Catch accidental N+1 queries during local development without
+        // slowing down or breaking the production build.
+        Model::preventLazyLoading(app()->isLocal() && ! app()->runningUnitTests());
+
         // Administrators bypass individual policy checks; sellers still go
         // through the ownership policies below.
         Gate::before(fn (User $user) => $user->isAdmin() ? true : null);
+
+        // Order notifications are queued listeners: a worker sends the
+        // customer confirmation and one message per seller.
+        Event::listen(OrderPlaced::class, SendOrderConfirmation::class);
+        Event::listen(OrderPlaced::class, NotifySellersOfOrder::class);
     }
 
     /**

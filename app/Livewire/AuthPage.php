@@ -142,6 +142,17 @@ class AuthPage extends Component
 
         $guestSessionId = session()->getId();
 
+        // Registration is an unauthenticated endpoint, so throttle attempts by IP.
+        $rateKey = 'register:'.request()->ip();
+
+        if (RateLimiter::tooManyAttempts($rateKey, 5)) {
+            throw ValidationException::withMessages([
+                'registerEmail' => 'Слишком много попыток регистрации. Попробуйте позже.',
+            ]);
+        }
+
+        RateLimiter::hit($rateKey, 600);
+
         $user = User::query()->create([
             'name' => $this->name,
             'email' => $this->registerEmail,

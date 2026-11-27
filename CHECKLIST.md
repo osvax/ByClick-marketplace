@@ -64,13 +64,13 @@
 
 ## Этап 5. Качество и запуск
 
-- [ ] Покрыть критичные сценарии тестами (корзина, оформление, права доступа)
-- [ ] `pint --dirty`, `phpstan analyse`, `composer test`
-- [ ] Индексы под каталог и заказы, проверка N+1 (`preventLazyLoading` в dev)
-- [ ] Rate limiting на auth, поиск и оформление
-- [ ] Очереди: письма о заказе, уведомления продавцу
-- [ ] SEO: sitemap, robots, Open Graph, микроразметка
-- [ ] Настройка production: кеш конфигов/роутов, `APP_DEBUG=false`, бэкапы
+- [x] Покрыть критичные сценарии тестами (корзина, оформление, права доступа)
+- [x] `pint --dirty`, `phpstan analyse`, `composer test`
+- [x] Индексы под каталог и заказы, проверка N+1 (`preventLazyLoading` в dev)
+- [x] Rate limiting на auth, поиск и оформление
+- [x] Очереди: письма о заказе, уведомления продавцу
+- [x] SEO: sitemap, robots, Open Graph, микроразметка
+- [x] Настройка production: кеш конфигов/роутов, `APP_DEBUG=false`, бэкапы
 
 ## Отложено (осознанно)
 

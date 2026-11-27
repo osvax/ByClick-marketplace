@@ -9,6 +9,7 @@ use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
@@ -48,6 +49,16 @@ class ResetPasswordPage extends Component
             'password' => 'пароль',
             'passwordConfirmation' => 'подтверждение пароля',
         ]);
+
+        $rateKey = 'password-reset:'.request()->ip();
+
+        if (RateLimiter::tooManyAttempts($rateKey, 10)) {
+            $this->addError('email', 'Слишком много попыток. Запросите новую ссылку позже.');
+
+            return;
+        }
+
+        RateLimiter::hit($rateKey, 600);
 
         $guestSessionId = session()->getId();
         $user = null;

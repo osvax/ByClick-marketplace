@@ -14,6 +14,8 @@ return [
 
     'currency' => env('MARKETPLACE_CURRENCY', 'Руб'),
 
+    'currency_code' => env('MARKETPLACE_CURRENCY_CODE', 'RUB'),
+
     'currency_scale' => 100,
 
     'delivery' => [

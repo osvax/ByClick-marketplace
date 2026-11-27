@@ -37,6 +37,12 @@
         </button>
     </div>
 
+    @if ($throttled)
+        <p class="va_suggest__empty" role="status">
+            Слишком много запросов. Подождите минуту и повторите поиск.
+        </p>
+    @endif
+
     @if ($open)
         <div class="va_search__suggest" id="va-search-suggest" role="listbox" aria-label="Подсказки поиска">
             @if ($suggestions->isEmpty())

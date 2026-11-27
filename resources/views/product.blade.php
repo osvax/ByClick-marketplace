@@ -12,12 +12,46 @@
     $bundleItems = collect([$product])->concat($bundleProducts);
     $bundlePrices = $bundleItems->mapWithKeys(fn ($item) => [$item->id => $item->price]);
     $bundleSelected = $bundleProducts->pluck('id')->values();
+
+    $productJsonLd = [
+        '@context' => 'https://schema.org',
+        '@type' => 'Product',
+        'name' => $product->name,
+        'image' => $galleryUrls->all(),
+        'description' => \Illuminate\Support\Str::limit(strip_tags($product->description ?? ''), 500),
+        'sku' => $product->slug,
+        'brand' => [
+            '@type' => 'Brand',
+            'name' => $product->brand ?: 'ByClick',
+        ],
+        'offers' => [
+            '@type' => 'Offer',
+            'url' => route('product.show', $product),
+            'priceCurrency' => config('marketplace.currency_code', 'RUB'),
+            'price' => number_format($product->price / $scale, 2, '.', ''),
+            'availability' => $product->stock > 0
+                ? 'https://schema.org/InStock'
+                : 'https://schema.org/OutOfStock',
+            'itemCondition' => 'https://schema.org/NewCondition',
+        ],
+    ];
+
+    if ($reviewCount > 0) {
+        $productJsonLd['aggregateRating'] = [
+            '@type' => 'AggregateRating',
+            'ratingValue' => (string) $product->rating,
+            'reviewCount' => $reviewCount,
+        ];
+    }
 @endphp
 
 <x-layouts.app
     :title="$product->name.' — купить в ByClick'"
     :description="\Illuminate\Support\Str::limit(strip_tags($product->description ?? 'Товар в ByClick'), 160)"
     :canonical="route('product.show', $product)"
+    :og-type="'product'"
+    :og-image="$galleryUrls->first()"
+    :json-ld="$productJsonLd"
 >
     <div class="va_container">
         <x-site.breadcrumbs :items="$breadcrumbs" />
