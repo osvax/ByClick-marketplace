@@ -128,7 +128,7 @@
                 <button class="va_action va_action--cart" type="button" data-va-cart-open aria-label="Открыть корзину">
                     <svg class="va_icon" aria-hidden="true"><use href="#va-i-cart" /></svg>
                     <span class="va_action__label">Корзина</span>
-                    <span class="va_action__count" data-va-cart-count hidden>0</span>
+                    <span class="va_action__count" data-va-cart-count @if ($cartCount === 0) hidden @endif>{{ $cartCount }}</span>
                 </button>
             </div>
         </div>

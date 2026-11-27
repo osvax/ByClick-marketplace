@@ -121,40 +121,64 @@ function initMenu() {
   }
 }
 
+/**
+ * Кнопка «Корзина» в шапке просит Livewire открыть drawer:
+ * состояние и класс is-open живут в компоненте CartDrawer.
+ */
 function initCartDrawer() {
-  const drawer = document.querySelector('[data-va-drawer]');
-  if (!drawer) return;
-
-  const openers = [...document.querySelectorAll('[data-va-cart-open]')];
-  const closers = [...drawer.querySelectorAll('[data-va-cart-close]')];
-  let lastFocused = null;
-
-  const open = () => {
-    if (drawer.classList.contains('is-open')) return;
-    lastFocused = document.activeElement;
-    drawer.classList.add('is-open');
-    drawer.setAttribute('aria-hidden', 'false');
-    lockScroll();
-
-    const closeButton = drawer.querySelector('[data-va-cart-close]');
-    window.setTimeout(() => closeButton && closeButton.focus(), 60);
-  };
-
-  const close = () => {
-    if (!drawer.classList.contains('is-open')) return;
-    drawer.classList.remove('is-open');
-    drawer.setAttribute('aria-hidden', 'true');
-    unlockScroll();
-
-    if (lastFocused && document.contains(lastFocused)) lastFocused.focus();
-  };
-
-  openers.forEach((btn) => btn.addEventListener('click', open));
-  closers.forEach((btn) => btn.addEventListener('click', close));
-
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') close();
+  document.addEventListener('click', (event) => {
+    if (event.target.closest('[data-va-cart-open]')) {
+      window.Livewire?.dispatch('open-cart');
+    }
   });
+}
+
+/**
+ * Кнопки «В корзину» на карточках и странице товара.
+ * Количество берётся из data-va-qty (его выставляет Alpine на buybox).
+ */
+function initCartButtons() {
+  document.addEventListener('click', (event) => {
+    const button = event.target.closest('[data-va-add]');
+
+    if (!button || !window.Livewire) return;
+
+    const productId = Number(button.dataset.vaAdd);
+    const quantity = Math.max(1, Number(button.dataset.vaQty || 1));
+
+    if (!productId) return;
+
+    window.Livewire.dispatch('cart-add', { productId, quantity });
+  });
+}
+
+/**
+ * Общие события Livewire: счётчик в шапке, блокировка скролла и тосты.
+ */
+function initLivewireEvents() {
+  const register = () => {
+    Livewire.on('cart-updated', ({ count }) => {
+      document.querySelectorAll('[data-va-cart-count]').forEach((badge) => {
+        badge.textContent = String(count ?? 0);
+        badge.hidden = !count;
+      });
+    });
+
+    Livewire.on('cart-visibility', ({ open }) => {
+      document.body.classList.toggle('is-locked', Boolean(open));
+    });
+
+    Livewire.on('notify', ({ message }) => {
+      if (message) showToast(message);
+    });
+  };
+
+  if (window.Livewire) {
+    register();
+    return;
+  }
+
+  document.addEventListener('livewire:init', register, { once: true });
 }
 
 export function initHeader() {
@@ -163,6 +187,8 @@ export function initHeader() {
   initCatalog();
   initMenu();
   initCartDrawer();
+  initCartButtons();
+  initLivewireEvents();
 
   document.querySelectorAll('[data-va-demo-toast]').forEach((button) => {
     button.addEventListener('click', (event) => {

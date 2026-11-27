@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Cart;
 use App\Models\Category;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -42,8 +43,13 @@ class AppServiceProvider extends ServiceProvider
             ->with(['children' => fn (HasMany $query) => $query->where('is_active', true)])
             ->get();
 
-        View::composer(['components.site.header', 'components.site.menu'], function (\Illuminate\View\View $view) use ($loadCategories): void {
-            $view->with('categories', once($loadCategories));
+        $loadCartCount = fn (): int => Cart::currentCart()?->totalQuantity() ?? 0;
+
+        View::composer(['components.site.header', 'components.site.menu'], function (\Illuminate\View\View $view) use ($loadCategories, $loadCartCount): void {
+            $view->with([
+                'categories' => once($loadCategories),
+                'cartCount' => once($loadCartCount),
+            ]);
         });
     }
 

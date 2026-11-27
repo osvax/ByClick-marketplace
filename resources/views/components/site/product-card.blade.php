@@ -48,7 +48,7 @@
 
         <p class="va_product-card__delivery">{{ $product->stock > 0 ? 'Завтра, бесплатно' : 'Под заказ' }}</p>
 
-        <button class="va_btn va_btn--cart" type="button" data-va-add>
+        <button class="va_btn va_btn--cart" type="button" data-va-add="{{ $product->id }}">
             <svg class="va_icon" aria-hidden="true"><use href="#va-i-cart" /></svg>
             <span>В корзину</span>
         </button>

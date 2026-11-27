@@ -173,7 +173,8 @@
                             <button
                                 class="va_btn va_btn--primary va_btn--buy"
                                 type="button"
-                                data-va-demo-toast="Демо-режим: корзина появится на следующем шаге"
+                                data-va-add="{{ $product->id }}"
+                                :data-va-qty="qty"
                                 @disabled($product->stock === 0)
                             >
                                 <svg class="va_icon" aria-hidden="true"><use href="#va-i-cart" /></svg>
@@ -308,7 +309,7 @@
                             <button
                                 class="va_btn va_btn--primary va_btn--block"
                                 type="button"
-                                data-va-demo-toast="Демо-режим: корзина появится на следующем шаге"
+                                @click="window.Livewire.dispatch('cart-add-bundle', { productIds: [{{ $product->id }}, ...selected] })"
                             >Добавить в корзину</button>
                             <p class="va_bundle__hint">Можно выбрать только нужные товары</p>
                         </aside>

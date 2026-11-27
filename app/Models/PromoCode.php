@@ -67,6 +67,45 @@ class PromoCode extends Model
         return $this->hasMany(Order::class);
     }
 
+    /**
+     * Whether the promo code can be applied to the given subtotal.
+     */
+    public function isApplicableTo(int $subtotal): bool
+    {
+        if (! $this->is_active) {
+            return false;
+        }
+
+        if ($this->usage_limit !== null && $this->used_count >= $this->usage_limit) {
+            return false;
+        }
+
+        if ($this->starts_at !== null && $this->starts_at->isFuture()) {
+            return false;
+        }
+
+        if ($this->ends_at !== null && $this->ends_at->isPast()) {
+            return false;
+        }
+
+        return $subtotal >= $this->min_total;
+    }
+
+    /**
+     * Discount in kopecks for the given subtotal.
+     */
+    public function discountFor(int $subtotal): int
+    {
+        if (! $this->isApplicableTo($subtotal)) {
+            return 0;
+        }
+
+        return match ($this->type) {
+            PromoType::Percent => min($subtotal, intdiv($subtotal * $this->value, 100)),
+            PromoType::Fixed => min($subtotal, $this->value),
+        };
+    }
+
     /** @param Builder<PromoCode> $query */
     #[Scope]
     protected function active(Builder $query): void
