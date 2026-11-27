@@ -1,0 +1,79 @@
+// ============================================================
+//  Аккаунт в шапке: выпадающее меню пользователя
+// ============================================================
+@use '../abstracts/mixins' as *;
+
+.va_account {
+  position: relative;
+
+  &__panel {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    z-index: 80;
+    width: 240px;
+    padding: 10px;
+    background: var(--va-surface);
+    border: 1px solid var(--va-line);
+    border-radius: var(--va-radius-md);
+    box-shadow: var(--va-shadow-lg);
+    animation: va-fade-down 0.16s var(--va-ease);
+  }
+
+  &__name {
+    font-size: 13.5px;
+    font-weight: 700;
+  }
+
+  &__email {
+    margin-top: 2px;
+    font-size: 12px;
+    color: var(--va-ink-3);
+    word-break: break-all;
+  }
+
+  &__link {
+    display: block;
+    padding: 8px 10px;
+    margin-top: 4px;
+    font-size: 13px;
+    border-radius: var(--va-radius-xs);
+    transition:
+      color var(--va-dur) var(--va-ease),
+      background-color var(--va-dur) var(--va-ease);
+
+    &:hover {
+      color: var(--va-brand);
+      background: var(--va-surface-2);
+    }
+
+    @include focus-ring;
+  }
+
+  &__logout {
+    @include reset-button;
+    display: block;
+    width: 100%;
+    padding: 8px 10px;
+    margin-top: 4px;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: left;
+    color: var(--va-sale);
+    border-radius: var(--va-radius-xs);
+
+    &:hover {
+      background: var(--va-sale-soft);
+    }
+
+    @include focus-ring;
+  }
+}
+
+.va_menu__logout {
+  margin-top: 8px;
+}
+
+[x-cloak] {
+  display: none !important;
+}

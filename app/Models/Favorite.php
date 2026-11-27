@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 /**
  * @property int $id
@@ -124,6 +125,25 @@ class Favorite extends Model
         ]);
 
         return true;
+    }
+
+    /**
+     * Move guest favorites of a session to the authenticated user.
+     */
+    public static function mergeGuestFavorites(string $sessionId, int $userId): void
+    {
+        DB::transaction(function () use ($sessionId, $userId): void {
+            $guestFavorites = static::query()->where('session_id', $sessionId)->get();
+
+            foreach ($guestFavorites as $favorite) {
+                static::query()->firstOrCreate([
+                    'user_id' => $userId,
+                    'product_id' => $favorite->product_id,
+                ]);
+
+                $favorite->delete();
+            }
+        });
     }
 
     /**

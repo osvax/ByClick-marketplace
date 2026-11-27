@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 /**
  * @property int $id
@@ -59,6 +60,40 @@ class Cart extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Merge a guest cart into the cart of a user after login or registration.
+     *
+     * Quantities are clamped to the current stock and the guest cart is removed.
+     */
+    public static function mergeGuestCart(string $sessionId, int $userId): void
+    {
+        $guest = static::query()
+            ->where('session_id', $sessionId)
+            ->with(['items.product', 'promoCode'])
+            ->first();
+
+        if ($guest === null) {
+            return;
+        }
+
+        DB::transaction(function () use ($guest, $userId): void {
+            $cart = static::query()->firstOrCreate(['user_id' => $userId]);
+
+            foreach ($guest->items as $item) {
+                if ($item->product !== null) {
+                    $cart->add($item->product, $item->quantity);
+                }
+            }
+
+            if ($cart->promo_code_id === null && $guest->promo_code_id !== null) {
+                $cart->update(['promo_code_id' => $guest->promo_code_id]);
+            }
+
+            // Cart items are removed by the foreign key cascade.
+            $guest->delete();
+        });
     }
 
     /** @return BelongsTo<PromoCode, $this> */

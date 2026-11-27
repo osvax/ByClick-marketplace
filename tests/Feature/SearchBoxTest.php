@@ -20,7 +20,7 @@ it('shows matching products while typing', function () {
         ->set('query', 'науш')
         ->assertSet('open', true)
         ->assertSee('Наушники «Аура Pro»', false)
-        ->assertSee('49,90 BYN')
+        ->assertSee('49,90 '.config('marketplace.currency'))
         ->assertSee('Показать все результаты')
         ->assertDontSee('Кружка керамическая', false);
 });

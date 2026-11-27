@@ -33,6 +33,14 @@
             </ul>
         </nav>
 
-        <a class="va_btn va_btn--primary va_btn--block" href="{{ url('/profile') }}">Мой профиль</a>
+        @auth
+            <a class="va_btn va_btn--primary va_btn--block" href="{{ url('/profile') }}">Мой профиль</a>
+            <form class="va_menu__logout" method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button class="va_btn va_btn--outline va_btn--block" type="submit">Выйти</button>
+            </form>
+        @else
+            <a class="va_btn va_btn--primary va_btn--block" href="{{ route('login') }}">Войти или зарегистрироваться</a>
+        @endauth
     </div>
 </div>

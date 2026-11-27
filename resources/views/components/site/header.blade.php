@@ -98,11 +98,44 @@
             <livewire:search-box />
 
             <div class="va_actions">
-                <a class="va_action" href="{{ url('/profile') }}">
-                    <svg class="va_icon" aria-hidden="true"><use href="#va-i-user" /></svg>
-                    <span class="va_action__label">Профиль</span>
-                </a>
-                <a class="va_action va_action--orders" href="{{ url('/orders') }}">
+                @auth
+                    <div
+                        class="va_account"
+                        x-data="{ open: false }"
+                        x-on:click.outside="open = false"
+                        x-on:keydown.escape="open = false"
+                    >
+                        <button
+                            class="va_action"
+                            type="button"
+                            x-on:click="open = ! open"
+                            :aria-expanded="open"
+                            aria-haspopup="true"
+                            aria-label="Меню профиля"
+                        >
+                            <svg class="va_icon" aria-hidden="true"><use href="#va-i-user" /></svg>
+                            <span class="va_action__label">Профиль</span>
+                        </button>
+
+                        <div class="va_account__panel" x-show="open" x-cloak>
+                            <p class="va_account__name">{{ auth()->user()->name }}</p>
+                            <p class="va_account__email">{{ auth()->user()->email }}</p>
+                            <a class="va_account__link" href="{{ url('/profile') }}">Профиль</a>
+                            <a class="va_account__link" href="{{ url('/orders') }}">Мои заказы</a>
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button class="va_account__logout" type="submit">Выйти</button>
+                            </form>
+                        </div>
+                    </div>
+                @else
+                    <a class="va_action" href="{{ route('login') }}">
+                        <svg class="va_icon" aria-hidden="true"><use href="#va-i-user" /></svg>
+                        <span class="va_action__label">Войти</span>
+                    </a>
+                @endauth
+
+                <a class="va_action va_action--orders" href="{{ auth()->check() ? url('/orders') : route('login') }}">
                     <svg class="va_icon" aria-hidden="true"><use href="#va-i-check" /></svg>
                     <span class="va_action__label">Заказы</span>
                 </a>

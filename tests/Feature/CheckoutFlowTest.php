@@ -39,7 +39,7 @@ it('renders the checkout page with cart contents', function () {
         ->assertOk()
         ->assertSee('Оформление заказа')
         ->assertSee('Наушники «Аура Pro»', false)
-        ->assertSee('99,80 BYN');
+        ->assertSee('99,80 '.config('marketplace.currency'));
 });
 
 it('validates contacts, address and agreement', function () {

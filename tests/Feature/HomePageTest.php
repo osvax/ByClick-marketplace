@@ -12,6 +12,6 @@ it('renders the marketplace home page with seeded products', function () {
         ->assertSee('Хиты недели')
         ->assertSee('Рекомендуем для вас')
         ->assertSee('Наушники «Аура Pro»', false)
-        ->assertSee('49,90 BYN')
+        ->assertSee('49,90 '.config('marketplace.currency'))
         ->assertSee('Зоотовары');
 });

@@ -88,7 +88,7 @@ it('shows cart items and totals on the page', function () {
     $this->get('/cart')
         ->assertOk()
         ->assertSee('Наушники «Аура Pro»', false)
-        ->assertSee('99,80 BYN')
+        ->assertSee('99,80 '.config('marketplace.currency'))
         ->assertSee('Оформить заказ');
 });
 

@@ -14,8 +14,8 @@ it('renders a product page with price, specs and seller', function () {
     $this->get('/product/naushniki-aura-pro')
         ->assertOk()
         ->assertSee('Наушники «Аура Pro», беспроводные', false)
-        ->assertSee('49,90 BYN')
-        ->assertSee('74,90 BYN')
+        ->assertSee('49,90 '.config('marketplace.currency'))
+        ->assertSee('74,90 '.config('marketplace.currency'))
         ->assertSee('ByClick Store')
         ->assertSee('104-230')
         ->assertSee('Характеристики');
