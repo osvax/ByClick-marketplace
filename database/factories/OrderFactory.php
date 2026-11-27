@@ -34,6 +34,7 @@ class OrderFactory extends Factory
             'delivery_method' => DeliveryMethod::Courier,
             'delivery_point_id' => null,
             'address' => fake()->address(),
+            'delivery_city' => fake()->randomElement(['Минск', 'Гомель', 'Брест', 'Витебск', 'Гродно', 'Могилёв']),
             'payment_method' => PaymentMethod::Online,
             'comment' => null,
             'subtotal' => $subtotal,

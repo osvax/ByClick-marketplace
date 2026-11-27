@@ -1,6 +1,6 @@
 @php
     $scale = (int) config('marketplace.currency_scale', 100);
-    $currency = config('marketplace.currency', 'BYN');
+    $currency = config('marketplace.currency', 'Руб');
     $money = fn (int $amount): string => number_format($amount / $scale, 2, ',', ' ').' '.$currency;
 
     $count = $cart?->totalQuantity() ?? 0;
@@ -92,30 +92,50 @@
                     <div class="va_radios">
                         <label class="va_radio">
                             <input type="radio" value="courier" wire:model.live="deliveryMethod" />
-                            <span><b>Курьером</b><br />завтра, {{ (int) config('marketplace.delivery.courier_price', 500) === 0 ? 'бесплатно' : '5 BYN' }}</span>
+                            <span>
+                                <b>Курьером</b><br />
+                                {{ $methodQuotes['courier']['label'] }},
+                                {{ $methodQuotes['courier']['price'] > 0 ? $money($methodQuotes['courier']['price']) : 'бесплатно' }}
+                            </span>
                         </label>
                         <label class="va_radio">
                             <input type="radio" value="pickup" wire:model.live="deliveryMethod" />
-                            <span><b>В пункт выдачи</b><br />завтра, бесплатно</span>
+                            <span><b>В пункт выдачи</b><br />{{ $methodQuotes['pickup']['label'] }}, бесплатно</span>
                         </label>
                         <label class="va_radio">
                             <input type="radio" value="postamat" wire:model.live="deliveryMethod" />
-                            <span><b>Постамат</b><br />2–3 дня, бесплатно</span>
+                            <span><b>Постамат</b><br />{{ $methodQuotes['postamat']['label'] }}, бесплатно</span>
                         </label>
                     </div>
+
+                    <p class="va_admin-note">
+                        Бесплатная курьерская доставка от {{ $money($freeDeliveryFrom) }}.
+                    </p>
 
                     @error('deliveryMethod')
                         <span class="va_field__error">{{ $message }}</span>
                     @enderror
 
-                    @if ($deliveryMethod === \App\Enums\DeliveryMethod::Courier)
+                    @if ($selectedDeliveryMethod === \App\Enums\DeliveryMethod::Courier)
+                        <label class="va_field">
+                            Город доставки
+                            <select class="va_input" wire:model.live="deliveryCity">
+                                @foreach ($deliveryCities as $city)
+                                    <option value="{{ $city }}">{{ $city }}</option>
+                                @endforeach
+                            </select>
+                            @error('deliveryCity')
+                                <span class="va_field__error">{{ $message }}</span>
+                            @enderror
+                        </label>
+
                         <label class="va_field">
                             Адрес доставки
                             <input
                                 class="va_input"
                                 type="text"
                                 wire:model="address"
-                                placeholder="Город, улица, дом, квартира"
+                                placeholder="Улица, дом, квартира"
                             />
                             @error('address')
                                 <span class="va_field__error">{{ $message }}</span>
@@ -123,8 +143,8 @@
                         </label>
                     @else
                         <label class="va_field">
-                            {{ $deliveryMethod === \App\Enums\DeliveryMethod::Postamat ? 'Постамат' : 'Пункт выдачи' }}
-                            <select class="va_input" wire:model="deliveryPointId">
+                            {{ $selectedDeliveryMethod === \App\Enums\DeliveryMethod::Postamat ? 'Постамат' : 'Пункт выдачи' }}
+                            <select class="va_input" id="checkout-delivery-point" wire:model="deliveryPointId">
                                 <option value="">Выберите пункт</option>
                                 @foreach ($deliveryPoints as $point)
                                     <option value="{{ $point->id }}">
@@ -136,6 +156,15 @@
                                 <span class="va_field__error">{{ $message }}</span>
                             @enderror
                         </label>
+
+                        <div class="va_delivery-map-block" wire:key="checkout-delivery-map-{{ $selectedDeliveryMethod->value }}">
+                            <x-site.delivery-map
+                                id="checkout-delivery-map"
+                                :points="$deliveryPoints"
+                                :selected-id="$deliveryPointId"
+                                select-selector="#checkout-delivery-point"
+                            />
+                        </div>
                     @endif
 
                     <label class="va_field va_form-grid--full">
@@ -236,7 +265,10 @@
                 @endif
 
                 <div class="va_summary__row">
-                    <span>Доставка</span>
+                    <span>
+                        Доставка
+                        <small class="va_summary__count">{{ $deliveryQuoteLabel }}</small>
+                    </span>
                     <span class="va_summary__free">{{ $deliveryPrice > 0 ? $money($deliveryPrice) : 'бесплатно' }}</span>
                 </div>
 
@@ -245,7 +277,7 @@
                     <span>{{ $money($total) }}</span>
                 </div>
 
-                <p class="va_summary__hint">Демо-режим: оплата и доставка не подключены.</p>
+                <p class="va_summary__hint">Доставка рассчитывается по городу и способу получения. Оплата — в демо-режиме.</p>
 
                 <div class="va_summary__links">
                     <a href="{{ route('cart') }}">Вернуться в корзину</a>

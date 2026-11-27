@@ -21,6 +21,8 @@ class DeliveryPointFactory extends Factory
         return [
             'city' => fake()->city(),
             'address' => fake()->streetAddress(),
+            'latitude' => fake()->latitude(51.5, 56.0),
+            'longitude' => fake()->longitude(23.0, 31.5),
             'schedule' => 'Ежедневно 09:00–21:00',
             'type' => DeliveryMethod::Pickup,
             'is_active' => true,

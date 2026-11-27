@@ -1,0 +1,95 @@
+// ============================================================
+//  Карта пунктов выдачи и расчёт доставки
+// ============================================================
+@use '../abstracts/variables' as *;
+
+.va_map {
+  position: relative;
+  margin-top: 14px;
+}
+
+.va_map__canvas {
+  position: relative;
+  z-index: 0;
+  height: clamp(320px, 48vw, 470px);
+  overflow: hidden;
+  background: var(--va-surface-2);
+  border: 1px solid var(--va-line);
+  border-radius: var(--va-radius-md);
+}
+
+.va_map__status {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  padding: 24px;
+  font-size: 13px;
+  color: var(--va-ink-3);
+  text-align: center;
+}
+
+.va_map__fallback {
+  margin-top: 8px;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--va-ink-3);
+}
+
+.va_map-pin {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 38px;
+  background: transparent;
+  border: 0;
+
+  &__dot {
+    display: block;
+    width: 20px;
+    height: 20px;
+    background: var(--va-brand);
+    border: 3px solid #fff;
+    border-radius: 50% 50% 50% 0;
+    box-shadow: 0 4px 12px rgba(18, 22, 45, 0.28);
+    transform: rotate(-45deg);
+  }
+}
+
+.va_delivery-map-block {
+  margin-top: 4px;
+}
+
+.va_delivery-zones {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+
+  @media (width >= 720px) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.va_delivery-zone {
+  padding: 14px 16px;
+  background: var(--va-surface);
+  border: 1px solid var(--va-line);
+  border-radius: var(--va-radius-sm);
+
+  &__city {
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  &__price {
+    margin-top: 3px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--va-brand);
+  }
+
+  &__days {
+    margin-top: 2px;
+    font-size: 11.5px;
+    color: var(--va-ink-3);
+  }
+}

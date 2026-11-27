@@ -9,6 +9,7 @@ use App\Models\Cart;
 use App\Models\DeliveryPoint;
 use App\Models\Order;
 use App\Models\Product;
+use App\Services\DeliveryCalculator;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
@@ -33,6 +34,9 @@ class CheckoutPage extends Component
     /** Courier address. */
     public string $address = '';
 
+    /** Courier city / delivery zone. */
+    public string $deliveryCity = '';
+
     /** Payment method value from the PaymentMethod enum. */
     public string $paymentMethod = 'online';
 
@@ -46,6 +50,8 @@ class CheckoutPage extends Component
      */
     public function mount(): void
     {
+        $this->deliveryCity = (string) config('marketplace.delivery.default_city', 'Минск');
+
         $user = auth()->user();
 
         if ($user === null) {
@@ -64,6 +70,10 @@ class CheckoutPage extends Component
     {
         if ($property === 'deliveryMethod') {
             $this->deliveryPointId = null;
+
+            if ($this->deliveryMethod === DeliveryMethod::Courier->value && $this->deliveryCity === '') {
+                $this->deliveryCity = (string) config('marketplace.delivery.default_city', 'Минск');
+            }
         }
     }
 
@@ -77,6 +87,7 @@ class CheckoutPage extends Component
         $this->customerPhone = trim($this->customerPhone);
         $this->customerEmail = trim($this->customerEmail);
         $this->address = trim($this->address);
+        $this->deliveryCity = trim($this->deliveryCity);
         $this->comment = trim($this->comment);
         $this->deliveryPointId = filled($this->deliveryPointId) ? (int) $this->deliveryPointId : null;
 
@@ -99,6 +110,13 @@ class CheckoutPage extends Component
                 'max:255',
                 Rule::requiredIf($this->deliveryMethod === DeliveryMethod::Courier->value),
             ],
+            'deliveryCity' => [
+                'nullable',
+                'string',
+                'max:100',
+                Rule::requiredIf($this->deliveryMethod === DeliveryMethod::Courier->value),
+                Rule::in(app(DeliveryCalculator::class)->cityOptions()),
+            ],
             'paymentMethod' => ['required', Rule::enum(PaymentMethod::class)],
             'comment' => ['nullable', 'string', 'max:1000'],
             'agree' => ['accepted'],
@@ -109,6 +127,7 @@ class CheckoutPage extends Component
             'deliveryMethod' => 'способ доставки',
             'deliveryPointId' => 'пункт выдачи',
             'address' => 'адрес',
+            'deliveryCity' => 'город доставки',
             'paymentMethod' => 'способ оплаты',
             'agree' => 'согласие с условиями',
         ]);
@@ -125,10 +144,21 @@ class CheckoutPage extends Component
         $paymentMethod = PaymentMethod::from($this->paymentMethod);
         $subtotal = $cart->subtotal();
         $discount = $cart->discount();
-        $deliveryPrice = $cart->deliveryPriceFor($deliveryMethod);
+
+        $calculator = app(DeliveryCalculator::class);
+        $quote = $calculator->quote($deliveryMethod, $this->deliveryCity, $subtotal, $discount);
+        $deliveryPrice = $quote['price'];
+
+        $deliveryPoint = $deliveryMethod === DeliveryMethod::Courier
+            ? null
+            : DeliveryPoint::query()->find($this->deliveryPointId);
+        $deliveryCity = $deliveryMethod === DeliveryMethod::Courier
+            ? $calculator->normalizeCity($this->deliveryCity)
+            : $deliveryPoint?->city;
+
         $total = max(0, $subtotal - $discount + $deliveryPrice);
 
-        $order = DB::transaction(function () use ($cart, $deliveryMethod, $paymentMethod, $subtotal, $discount, $deliveryPrice, $total): Order {
+        $order = DB::transaction(function () use ($cart, $deliveryMethod, $paymentMethod, $subtotal, $discount, $deliveryPrice, $deliveryCity, $deliveryPoint, $total): Order {
             // Lock products and make sure the stock is still sufficient.
             foreach ($cart->items as $item) {
                 $product = Product::query()->lockForUpdate()->find($item->product_id);
@@ -147,8 +177,9 @@ class CheckoutPage extends Component
                 'customer_phone' => $this->customerPhone,
                 'customer_email' => $this->customerEmail,
                 'delivery_method' => $deliveryMethod,
-                'delivery_point_id' => $deliveryMethod === DeliveryMethod::Courier ? null : $this->deliveryPointId,
+                'delivery_point_id' => $deliveryMethod === DeliveryMethod::Courier ? null : $deliveryPoint?->id,
                 'address' => $deliveryMethod === DeliveryMethod::Courier ? $this->address : null,
+                'delivery_city' => $deliveryCity,
                 'payment_method' => $paymentMethod,
                 'comment' => $this->comment !== '' ? $this->comment : null,
                 'subtotal' => $subtotal,
@@ -192,8 +223,26 @@ class CheckoutPage extends Component
     {
         $cart = Cart::currentCart()?->load(['items.product.shop', 'items.product.mainImage', 'promoCode']);
         $deliveryMethod = DeliveryMethod::tryFrom($this->deliveryMethod) ?? DeliveryMethod::Courier;
-        $deliveryPrice = $cart?->deliveryPriceFor($deliveryMethod) ?? 0;
-        $total = max(0, ($cart?->subtotal() ?? 0) - ($cart?->discount() ?? 0) + $deliveryPrice);
+        $subtotal = $cart?->subtotal() ?? 0;
+        $discount = $cart?->discount() ?? 0;
+
+        $calculator = app(DeliveryCalculator::class);
+        $quote = $calculator->quote($deliveryMethod, $this->deliveryCity, $subtotal, $discount);
+        $deliveryPrice = $quote['price'];
+        $total = max(0, $subtotal - $discount + $deliveryPrice);
+
+        // Quotes for all methods are shown on the radio cards, so the
+        // customer sees the actual price and estimate before switching.
+        $methodQuotes = [];
+
+        foreach (DeliveryMethod::cases() as $method) {
+            $methodQuote = $calculator->quote($method, $this->deliveryCity, $subtotal, $discount);
+
+            $methodQuotes[$method->value] = [
+                'price' => $methodQuote['price'],
+                'label' => $calculator->estimateLabel($methodQuote),
+            ];
+        }
 
         $deliveryPoints = DeliveryPoint::query()
             ->active()
@@ -208,9 +257,15 @@ class CheckoutPage extends Component
         return view('livewire.checkout-page', [
             'cart' => $cart,
             'items' => $cart === null ? collect() : $cart->items,
-            'deliveryMethod' => $deliveryMethod,
+            'selectedDeliveryMethod' => $deliveryMethod,
             'deliveryPrice' => $deliveryPrice,
+            'deliveryQuote' => $quote,
+            'deliveryQuoteLabel' => $calculator->estimateLabel($quote),
+            'methodQuotes' => $methodQuotes,
+            'courierBasePrice' => $calculator->courierPriceForCity($this->deliveryCity),
             'deliveryPoints' => $deliveryPoints,
+            'deliveryCities' => $calculator->cityOptions(),
+            'freeDeliveryFrom' => (int) config('marketplace.delivery.free_from', 10000),
             'total' => $total,
         ]);
     }

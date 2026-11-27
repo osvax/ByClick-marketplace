@@ -1,6 +1,6 @@
 @php
     $scale = (int) config('marketplace.currency_scale', 100);
-    $currency = config('marketplace.currency', 'BYN');
+    $currency = config('marketplace.currency', 'Руб');
     $money = fn (int $amount): string => number_format($amount / $scale, 2, ',', ' ').' '.$currency;
 @endphp
 
@@ -60,7 +60,7 @@
                     <span>{{ $order->delivery_method === \App\Enums\DeliveryMethod::Courier ? 'Адрес' : 'Пункт' }}</span>
                     <span>
                         @if ($order->delivery_method === \App\Enums\DeliveryMethod::Courier)
-                            {{ $order->address }}
+                            {{ $order->delivery_city ? $order->delivery_city.', ' : '' }}{{ $order->address }}
                         @else
                             {{ $order->deliveryPoint?->city }}, {{ $order->deliveryPoint?->address }}
                         @endif

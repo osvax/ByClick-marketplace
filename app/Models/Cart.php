@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\DeliveryMethod;
+use App\Services\DeliveryCalculator;
 use Database\Factories\CartFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -196,24 +197,13 @@ class Cart extends Model
     }
 
     /**
-     * Delivery price for a specific delivery method.
+     * Delivery price for a specific delivery method and city.
      * Pickup points and postamats are always free.
      */
-    public function deliveryPriceFor(?DeliveryMethod $method = null): int
+    public function deliveryPriceFor(?DeliveryMethod $method = null, ?string $city = null): int
     {
-        if ($this->subtotal() === 0) {
-            return 0;
-        }
-
-        if ($method !== null && $method !== DeliveryMethod::Courier) {
-            return 0;
-        }
-
-        $freeFrom = (int) config('marketplace.delivery.free_from', 10000);
-
-        return $this->subtotal() - $this->discount() >= $freeFrom
-            ? 0
-            : (int) config('marketplace.delivery.courier_price', 500);
+        return app(DeliveryCalculator::class)
+            ->quote($method ?? DeliveryMethod::Courier, $city, $this->subtotal(), $this->discount())['price'];
     }
 
     /**

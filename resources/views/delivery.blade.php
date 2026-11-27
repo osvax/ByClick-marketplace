@@ -1,9 +1,8 @@
 @php
     $scale = (int) config('marketplace.currency_scale', 100);
-    $currency = config('marketplace.currency', 'BYN');
+    $currency = config('marketplace.currency', 'Руб');
     $money = fn (int $amount): string => number_format($amount / $scale, 2, ',', ' ').' '.$currency;
     $courierPrice = (int) config('marketplace.delivery.courier_price', 500);
-    $freeFrom = (int) config('marketplace.delivery.free_from', 10000);
 @endphp
 
 <x-layouts.app
@@ -42,32 +41,53 @@
                     <span class="va_feature__icon"><svg class="va_icon" aria-hidden="true"><use href="#va-i-pin" /></svg></span>
                     <h3 class="va_feature__title">Пункт выдачи</h3>
                     <p class="va_feature__text">Более 2 000 точек. Заказ хранится 7 дней, примерка — 15 минут.</p>
-                    <p class="va_feature__price">бесплатно</p>
+                    <p class="va_feature__price">бесплатно · {{ $pickupLabel }}</p>
                 </article>
 
                 <article class="va_feature">
                     <span class="va_feature__icon"><svg class="va_icon" aria-hidden="true"><use href="#va-i-home" /></svg></span>
                     <h3 class="va_feature__title">Постамат</h3>
                     <p class="va_feature__text">Круглосуточно, по коду из приложения. Хранение — 3 дня.</p>
-                    <p class="va_feature__price">бесплатно</p>
+                    <p class="va_feature__price">бесплатно · {{ $postamatLabel }}</p>
                 </article>
             </div>
         </section>
 
-        <section class="va_section" aria-labelledby="va-pickup-title">
+        <section class="va_section" aria-labelledby="va-delivery-cost-title">
+            <header class="va_section__head">
+                <h2 class="va_section__title" id="va-delivery-cost-title">Стоимость и сроки курьерской доставки</h2>
+            </header>
+
+            <p class="va_feature__text">
+                Стоимость зависит от города. При заказе от {{ $money($freeFrom) }} курьер по Беларуси бесплатный.
+            </p>
+
+            <div class="va_delivery-zones">
+                @foreach ($zones as $zone)
+                    <article class="va_delivery-zone">
+                        <p class="va_delivery-zone__city">{{ $zone['city'] }}</p>
+                        <p class="va_delivery-zone__price">{{ $money($zone['price']) }}</p>
+                        <p class="va_delivery-zone__days">{{ $zone['label'] }}</p>
+                    </article>
+                @endforeach
+            </div>
+        </section>
+
+        <section class="va_section" aria-labelledby="va-pickup-title" id="va-pickup-map">
             <header class="va_section__head">
                 <h2 class="va_section__title" id="va-pickup-title">Популярные пункты выдачи</h2>
-                <button
-                    class="va_section__link"
-                    type="button"
-                    data-va-demo-toast="Карта пунктов выдачи появится в следующей версии"
-                >Показать на карте</button>
+                <a class="va_section__link" href="#va-pickup-list">
+                    Списком
+                    <svg class="va_icon" aria-hidden="true"><use href="#va-i-arrow-right" /></svg>
+                </a>
             </header>
 
             @if ($points->isEmpty())
                 <p class="va_feature__text">Пункты выдачи скоро появятся.</p>
             @else
-                <div class="va_features">
+                <x-site.delivery-map id="va-delivery-map" :points="$points" />
+
+                <div class="va_features" id="va-pickup-list" style="margin-top: 18px;">
                     @foreach ($points as $point)
                         <article class="va_panel">
                             <h3 class="va_panel__title">{{ $point->city }}, {{ $point->address }}</h3>

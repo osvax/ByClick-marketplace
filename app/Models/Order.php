@@ -27,6 +27,7 @@ use Illuminate\Support\Str;
  * @property DeliveryMethod $delivery_method
  * @property int|null $delivery_point_id
  * @property string|null $address
+ * @property string|null $delivery_city
  * @property PaymentMethod $payment_method
  * @property string|null $comment
  * @property int $subtotal
@@ -48,6 +49,7 @@ use Illuminate\Support\Str;
     'delivery_method',
     'delivery_point_id',
     'address',
+    'delivery_city',
     'payment_method',
     'comment',
     'subtotal',

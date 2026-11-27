@@ -181,6 +181,38 @@ it('refuses to place an order when the stock is insufficient', function () {
         ->and(Cart::current()->items()->count())->toBe(1);
 });
 
+it('calculates courier delivery for the selected city', function () {
+    $this->actingAs(User::factory()->create());
+
+    $product = Product::query()->where('slug', 'naushniki-aura-pro')->firstOrFail();
+    Cart::current()->add($product, 1);
+
+    fillCheckoutContacts(Livewire::test(CheckoutPage::class))
+        ->set('deliveryCity', 'Гомель')
+        ->set('address', 'ул. Советская, 34')
+        ->set('agree', true)
+        ->call('placeOrder')
+        ->assertHasNoErrors();
+
+    $order = Order::query()->firstOrFail();
+
+    expect($order->delivery_city)->toBe('Гомель')
+        ->and($order->delivery_price)->toBe(700)
+        ->and($order->total)->toBe(5690);
+});
+
+it('shows the pickup point map in checkout', function () {
+    $this->actingAs(User::factory()->create());
+
+    $product = Product::query()->where('slug', 'naushniki-aura-pro')->firstOrFail();
+    Cart::current()->add($product, 1);
+
+    Livewire::test(CheckoutPage::class)
+        ->set('deliveryMethod', 'pickup')
+        ->assertSee('data-va-delivery-map', false)
+        ->assertSee('checkout-delivery-point', false);
+});
+
 it('protects the success page of an order', function () {
     $order = Order::factory()->create(['user_id' => null]);
 

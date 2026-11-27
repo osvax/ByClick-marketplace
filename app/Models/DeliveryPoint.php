@@ -16,13 +16,15 @@ use Illuminate\Support\Carbon;
  * @property int $id
  * @property string $city
  * @property string $address
+ * @property float|null $latitude
+ * @property float|null $longitude
  * @property string|null $schedule
  * @property DeliveryMethod $type
  * @property bool $is_active
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-#[Fillable(['city', 'address', 'schedule', 'type', 'is_active'])]
+#[Fillable(['city', 'address', 'latitude', 'longitude', 'schedule', 'type', 'is_active'])]
 class DeliveryPoint extends Model
 {
     /** @use HasFactory<DeliveryPointFactory> */
@@ -36,6 +38,8 @@ class DeliveryPoint extends Model
     protected function casts(): array
     {
         return [
+            'latitude' => 'float',
+            'longitude' => 'float',
             'type' => DeliveryMethod::class,
             'is_active' => 'boolean',
         ];

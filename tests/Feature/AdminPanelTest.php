@@ -215,7 +215,7 @@ it('creates and toggles promo codes', function () {
 
 it('toggles shop status and verification', function () {
     $admin = User::factory()->admin()->create();
-    $shop = Shop::factory()->create();
+    $shop = Shop::factory()->create(['is_verified' => true]);
 
     $this->actingAs($admin);
 
