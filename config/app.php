@@ -65,7 +65,7 @@ return [
     |
     */
 
-    'timezone' => 'Europe/Samara',
+    'timezone' => env('APP_TIMEZONE', 'Europe/Minsk'),
 
     /*
     |--------------------------------------------------------------------------
