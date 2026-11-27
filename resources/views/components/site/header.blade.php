@@ -94,22 +94,8 @@
                 </div>
             </div>
 
-            <form class="va_search" role="search" action="{{ url('/catalog') }}" method="get" autocomplete="off">
-                <label class="va_visually-hidden" for="va-search-input">Поиск по каталогу</label>
-                <div class="va_search__field">
-                    <svg class="va_search__icon va_icon" aria-hidden="true"><use href="#va-i-search" /></svg>
-                    <input
-                        class="va_search__input"
-                        id="va-search-input"
-                        type="search"
-                        name="q"
-                        placeholder="Искать товары, бренды или категории"
-                    />
-                    <button class="va_search__submit" type="submit" aria-label="Найти">
-                        <svg class="va_icon" aria-hidden="true"><use href="#va-i-search" /></svg>
-                    </button>
-                </div>
-            </form>
+            {{-- Поиск с живыми подсказками на Livewire --}}
+            <livewire:search-box />
 
             <div class="va_actions">
                 <a class="va_action" href="{{ url('/profile') }}">

@@ -432,11 +432,9 @@ class Catalog extends Component
                 ->whereNotNull('old_price')
                 ->whereColumn('old_price', '>', 'price'))
             ->when($this->q !== '', function (Builder $query): void {
-                $term = '%'.$this->q.'%';
-
-                $query->where(fn (Builder $query) => $query
-                    ->where('name', 'like', $term)
-                    ->orWhere('brand', 'like', $term));
+                // search_text is pre-normalized to lowercase, so this works
+                // the same on MySQL and SQLite regardless of input case.
+                $query->where('search_text', 'like', '%'.mb_strtolower($this->q).'%');
             })
             ->tap(fn (Builder $query) => $this->applySorting($query));
     }

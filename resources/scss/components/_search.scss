@@ -154,4 +154,23 @@
     font-size: 14px;
     color: var(--va-ink-2);
   }
+
+  &__all {
+    display: block;
+    margin-top: 4px;
+    padding: 10px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--va-brand);
+    text-align: center;
+    border-top: 1px solid var(--va-line);
+    border-radius: 0 0 var(--va-radius-xs) var(--va-radius-xs);
+    transition: background-color var(--va-dur) var(--va-ease);
+
+    &:hover {
+      background: var(--va-surface-2);
+    }
+
+    @include focus-ring;
+  }
 }

@@ -20,6 +20,7 @@ use Illuminate\Support\Carbon;
  * @property string $slug
  * @property string $name
  * @property string|null $brand
+ * @property string|null $search_text
  * @property string|null $description
  * @property array<string, string>|null $specs
  * @property int $price
@@ -70,6 +71,16 @@ class Product extends Model
             'sold_count' => 'integer',
             'is_active' => 'boolean',
         ];
+    }
+
+    /**
+     * Keep the normalized search string in sync with the product name and brand.
+     */
+    protected static function booted(): void
+    {
+        static::saving(function (Product $product): void {
+            $product->search_text = mb_strtolower(trim($product->name.' '.($product->brand ?? '')));
+        });
     }
 
     /** @return BelongsTo<Shop, $this> */
