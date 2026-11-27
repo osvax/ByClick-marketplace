@@ -1,2 +1,2 @@
-# Valexo-marketplace
-Valexo-marketplace
+# Versta-marketplace
+Versta-marketplace
